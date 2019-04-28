@@ -29,7 +29,7 @@ defineTest(linkStaticLibrary) {
     lib_build_dir = $$1
     lib_target_name = $$2
 
-    isEmpty(lib_target_name){
+    isEmpty(lib_target_name) {
         lib_target_name = $$lib_build_dir
     }
 
@@ -42,10 +42,14 @@ defineTest(linkStaticLibrary) {
           message( "Static lib not found:" $$LIB_PATH)
     }
 
+    # link library
     LIBS += -L$$LIB_DIR -l$$lib_target_name
+    # add library headers directory to search path
     INCLUDEPATH += $$SOURCE_ROOT_DIR/$$lib_build_dir/src
+    # configure dependency - causes target to rebuild when library changes (otherwise it causes nasty problems, at least under qmake 3.1)
     PRE_TARGETDEPS += $$LIB_PATH
 
+    # export variables to global scope
     export(LIBS)
     export(INCLUDEPATH)
     export(PRE_TARGETDEPS)
