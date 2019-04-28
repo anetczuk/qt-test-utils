@@ -28,3 +28,5 @@ echo ""
 
 cd $DEBUG_DIR
 make $@
+
+echo -e "\nDone"
