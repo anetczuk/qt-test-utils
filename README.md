@@ -15,5 +15,11 @@ Only once:
 - create "main" source file and call *QTEST_RUN_TESTS()* macro from *QTestRegister.h*
 
 
+### Macros:
+- *QTEST_REGISTER()* -- register test case for tests runner
+- *QTEST_MAIN()* -- redefined standard macro to call *QTEST_REGISTER()*
+- *QTEST_RUN_TESTS()* - tests runner -- generates *main()* function (to be used only once)
+
+
 ### Other things:
-- *common.pri* contains example of function definition for qmake - *linkStaticLibrary()* - function demonstrates how to link static libraries
+- *common.pri* contains example of function definition for qmake -- *linkStaticLibrary()* -- function demonstrates how to link static libraries
