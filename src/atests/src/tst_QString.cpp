@@ -1,4 +1,5 @@
 #include "QTestRegister.h"
+#include <QtTest/QtTest>
 
 
 class TestQString: public QObject
@@ -13,6 +14,6 @@ private slots:
     }
 };
 
-//QTEST_MAIN(TestQString)
-QTEST_REGISTER(TestQString)
+
+QTEST_MAIN(TestQString)
 #include "tst_QString.moc"

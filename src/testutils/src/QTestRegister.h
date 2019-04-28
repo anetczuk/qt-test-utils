@@ -5,14 +5,31 @@
 #include <QSharedPointer>
 
 
+#ifndef EXEC_PER_TESTCASE
 
-#define QTEST_REGISTER( test_class )    static testutils::RegisterInvocation<test_class> TEST_CASE__FILE__;
+    // new behaviour -- run all tests in one executable
+
+    #define QTEST_REGISTER( test_class )    static testutils::RegisterTestCaseInvocation<test_class> TEST_CASE__FILE__;
 
 
-#define QTEST_RUN_TESTS()                                                                   \
-                            int main(int argc, char *argv[]) {                              \
-                                return testutils::run_regustered_tests(argc, argv);         \
-                            }
+    #define QTEST_RUN_TESTS()                                                                   \
+                                int main(int argc, char *argv[]) {                              \
+                                    return testutils::run_regustered_tests(argc, argv);         \
+                                }
+
+    // redefine standard macro to keep compatibile with old code
+    #undef QTEST_MAIN
+    #define QTEST_MAIN( test_class )        QTEST_REGISTER( test_class )
+
+#else
+
+    // old behaviour -- create executable per test case
+
+    #define QTEST_REGISTER( test_class )    QTEST_MAIN( test_class )
+
+    #define QTEST_RUN_TESTS()               // do nothing
+
+#endif
 
 
 namespace testutils {
@@ -21,19 +38,14 @@ namespace testutils {
 
     int run_regustered_tests(int argc, char *argv[]);
 
-    //std::vector<QObject*> &registered_tests();
-
 
     template <class TC>
-    class RegisterInvocation {
-
+    class RegisterTestCaseInvocation {
         QSharedPointer<TC> testCase;
 
     public:
 
-
-        RegisterInvocation(): testCase(nullptr) {
-            testCase.reset( new TC() );
+        RegisterTestCaseInvocation(): testCase( new TC() ) {
             register_test_case( testCase.data() );
         }
 

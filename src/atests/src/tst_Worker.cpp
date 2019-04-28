@@ -15,6 +15,6 @@ private slots:
 
 };
 
-//QTEST_MAIN(TestWorker)
+
 QTEST_REGISTER(TestWorker)
 #include "tst_Worker.moc"
