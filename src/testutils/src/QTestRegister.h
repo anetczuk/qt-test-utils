@@ -14,7 +14,7 @@
 
     #define QTEST_RUN_TESTS()                                                                   \
                                 int main(int argc, char *argv[]) {                              \
-                                    return testutils::run_regustered_tests(argc, argv);         \
+                                    return testutils::run_registered_tests(argc, argv);         \
                                 }
 
     // redefine standard macro to keep compatibile with old code
@@ -36,7 +36,7 @@ namespace testutils {
 
     void register_test_case(QObject* testCase);
 
-    int run_regustered_tests(int argc, char *argv[]);
+    int run_registered_tests(int argc, char *argv[]);
 
 
     template <class TC>

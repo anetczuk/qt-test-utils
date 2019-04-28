@@ -16,7 +16,7 @@ namespace testutils {
         tests.push_back(testCase);
     }
 
-    int run_regustered_tests(int argc, char *argv[]) {
+    int run_registered_tests(int argc, char *argv[]) {
         TestsRegistry& tests = registered_tests();
         if (tests.size() < 1) {
             qWarning() << "no registered tests found";
@@ -27,4 +27,5 @@ namespace testutils {
         }
         return status;
     }
+
 }
