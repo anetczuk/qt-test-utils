@@ -1,7 +1,7 @@
 TEMPLATE = lib
 TARGET = testutils
 
-QT += qml quick testlib
+QT += qml quick widgets
 
 include(../common.pri)
 

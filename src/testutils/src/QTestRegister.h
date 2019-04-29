@@ -24,6 +24,7 @@
 #ifndef SRC_ALIB_SRC_QTESTREGISTER_H_
 #define SRC_ALIB_SRC_QTESTREGISTER_H_
 
+#include <QApplication>
 #include <QtTest/QtTest>
 #include <QSharedPointer>
 
@@ -36,7 +37,14 @@
 
 
     #define QTEST_RUN_TESTS()                                                                   \
+                                QT_BEGIN_NAMESPACE                                              \
+                                QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS                            \
+                                QT_END_NAMESPACE                                                \
                                 int main(int argc, char *argv[]) {                              \
+                                    QApplication app(argc, argv);                               \
+                                    QTEST_DISABLE_KEYPAD_NAVIGATION                             \
+                                    QTEST_ADD_GPU_BLACKLIST_SUPPORT                             \
+                                    QTEST_SET_MAIN_SOURCE_PATH                                  \
                                     return testutils::run_registered_tests(argc, argv);         \
                                 }
 

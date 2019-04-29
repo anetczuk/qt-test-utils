@@ -33,6 +33,8 @@ namespace testutils {
         return list;
     }
 
+    // ======================================================
+
     void register_test_case(QObject* testCase) {
         TestsRegistry& tests = registered_tests();
         tests.push_back(testCase);
@@ -43,11 +45,12 @@ namespace testutils {
         if (tests.size() < 1) {
             qWarning() << "no registered tests found";
         }
+
         int status = 0;
         for (auto it = tests.begin(); it != tests.end(); ++it) {
             status += QTest::qExec(*it, argc, argv);
         }
-        return status;
+        return std::min(status, 127);
     }
 
 }

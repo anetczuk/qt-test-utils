@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = tests
 
-QT += qml quick testlib
+QT += qml quick widgets testlib
 
 include(../common.pri)
 
@@ -12,6 +12,8 @@ CONFIG += c++11
 
 #qml.files = src/eclipse-qt.qml
 
+
+HEADERS += $$files(src/*.h, true)
 
 SOURCES += $$files(src/*.cpp, true)
 
