@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 
-SUBDIRS = library testutils tests
+SUBDIRS = library testutils testutilstests tests
 
 
 library.subdir = alib

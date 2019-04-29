@@ -23,25 +23,5 @@
 
 #include "QTestRegister.h"
 
-#include "Worker.h"
 
-
-class TestWorker: public QObject {
-    Q_OBJECT
-
-private slots:
-
-    void test_work001() {
-    	Worker worker;
-        QCOMPARE(worker.work(), true);
-    }
-
-    void test_work002() {
-        QVERIFY(true);
-    }
-
-};
-
-
-QTEST_REGISTER(TestWorker)
-#include "tst_Worker.moc"
+QTEST_RUN_TESTS()

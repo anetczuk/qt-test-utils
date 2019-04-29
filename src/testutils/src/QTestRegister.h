@@ -33,7 +33,7 @@
 
     // new behaviour -- run all tests in one executable
 
-    #define QTEST_REGISTER( test_class )    static testutils::RegisterTestCaseInvocation<test_class> TEST_CASE__FILE__;
+    #define QTEST_REGISTER( test_class )    static testutils::RegisterTestCaseInvocation<test_class> PPCAT(TEST_CASE, __LINE__);
 
 
     #define QTEST_RUN_TESTS()                                                                   \
@@ -63,11 +63,24 @@
 #endif
 
 
+#define PPCAT(A, B) PPCAT_NX(A, B)
+#define PPCAT_NX(A, B) A ## B
+
+
 namespace testutils {
 
     void register_test_case(QObject* testCase);
 
     int run_registered_tests(int argc, char *argv[]);
+
+    QStringList find_methods(const QObject* testCase, const QString& function);
+
+    QStringList find_methods(const QObject* testCase, const QStringList& functions);
+
+    QStringList extract_functions(const QStringList& arguments);
+
+
+    // ======================================================
 
 
     template <class TC>
@@ -79,6 +92,49 @@ namespace testutils {
         RegisterTestCaseInvocation(): testCase( new TC() ) {
             register_test_case( testCase.data() );
         }
+
+    };
+
+
+    class TestsRegistry {
+
+        std::vector<QObject*> casesList;
+
+    public:
+
+        TestsRegistry(): casesList() {
+        }
+
+        const QObject* operator [](const std::size_t index) const {
+            return casesList[index];
+        }
+
+        QObject* operator [](const std::size_t index) {
+            return casesList[index];
+        }
+
+        std::size_t size() const {
+            return casesList.size();
+        }
+
+        const QObject* get(const std::size_t index) const {
+            return casesList[index];
+        }
+
+        QObject* get(const std::size_t index) {
+            return casesList[index];
+        }
+
+        void push_back(QObject* testCase) {
+            casesList.push_back(testCase);
+        }
+
+        int run_tests(const QStringList& arguments);
+
+
+    protected:
+
+        virtual int execute_test_case(QObject* testCase, const QStringList& arguments);
 
     };
 
