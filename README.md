@@ -3,7 +3,8 @@ Extensions to Qt testing framework
 
 ### Features:
 - run all test cases in one executable (usefull e.g. in case of one tests subproject QtCreator)
-- switch to old behaviour if needed
+- switch to old behaviour if needed (define EXEC_PER_TESTCASE)
+- calling tests by name supports wildcard(*)
 
 
 ### Use:
