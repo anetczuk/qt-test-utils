@@ -24,7 +24,7 @@
 #include "QTestRegister.h"
 
 
-class ObjectWithFunctions: public QObject {
+class DummyTestCase: public QObject {
     Q_OBJECT
 
 
@@ -48,7 +48,7 @@ class TestQTestRegister: public QObject {
 private slots:
 
     void test_find_methods_exact() {
-        ObjectWithFunctions object;
+        DummyTestCase object;
         const QStringList mNames = testutils::find_methods(&object, "function001");
 
         QCOMPARE(mNames.size(), 1);
@@ -56,7 +56,7 @@ private slots:
     }
 
     void test_find_methods_wildcard() {
-        ObjectWithFunctions object;
+        DummyTestCase object;
         const QStringList mNames = testutils::find_methods(&object, "function*");
 
         QCOMPARE(mNames.size(), 2);
@@ -65,28 +65,28 @@ private slots:
     }
 
     void test_find_methods_signal() {
-        ObjectWithFunctions object;
+        DummyTestCase object;
         const QStringList mNames = testutils::find_methods(&object, "objectNameChanged");
 
         QCOMPARE(mNames.size(), 0);
     }
 
     void test_find_methods_slot_public() {
-        ObjectWithFunctions object;
+        DummyTestCase object;
         const QStringList mNames = testutils::find_methods(&object, "slot_public");
 
         QCOMPARE(mNames.size(), 0);
     }
 
     void test_find_methods_destructor() {
-        ObjectWithFunctions object;
+        DummyTestCase object;
         const QStringList mNames = testutils::find_methods(&object, "objectNameChanged");
 
         QCOMPARE(mNames.size(), 0);
     }
 
     void test_find_methods_wildcard_all() {
-        ObjectWithFunctions object;
+        DummyTestCase object;
         const QStringList mNames = testutils::find_methods(&object, "*");
 
         QCOMPARE(mNames.size(), 2);
@@ -96,7 +96,7 @@ private slots:
 
     void test_find_methods_list() {
         const QStringList functionsToFind = {"function001", "function002", "function333"};
-        ObjectWithFunctions object;
+        DummyTestCase object;
         const QStringList mNames = testutils::find_methods(&object, functionsToFind);
 
         QCOMPARE(mNames.size(), 2);
@@ -104,9 +104,9 @@ private slots:
         QCOMPARE(mNames[1], QString("function002"));
     }
 
-    void test_extract_functions() {
+    void test_extract_functions_from_arguments() {
         QStringList arguments = {"bin_path", "-v1", "test_aaa001", "-median", "30", "-xxx", "test_aaa002"};
-        const QStringList functions = testutils::extract_functions(arguments);
+        const QStringList functions = testutils::extract_functions_from_arguments(arguments);
 
         QCOMPARE(functions.size(), 2);
         QCOMPARE(functions[0], QString("test_aaa001"));
@@ -143,7 +143,7 @@ private slots:
 
     void test_run_tests_single() {
         TestsRegistryMock registry;
-        ObjectWithFunctions object;
+        DummyTestCase object;
         registry.push_back( &object );
         QStringList arguments = {"binary_path"};
 
@@ -153,9 +153,9 @@ private slots:
 
     void test_run_tests_multi() {
         TestsRegistryMock registry;
-        ObjectWithFunctions object001;
+        DummyTestCase object001;
         registry.push_back( &object001 );
-        ObjectWithFunctions object002;
+        DummyTestCase object002;
         registry.push_back( &object002 );
         QStringList arguments = {"binary_path"};
 
@@ -167,9 +167,21 @@ private slots:
         TestsRegistryMock registry;
         QObject object001;
         registry.push_back( &object001 );
-        ObjectWithFunctions object002;
+        DummyTestCase object002;
         registry.push_back( &object002 );
         QStringList arguments = {"binary_path", "function001"};
+
+        const int ret = registry.run_tests(arguments);
+        QCOMPARE(ret, 1);
+    }
+
+    void test_run_tests_filtered_with_class() {
+        TestsRegistryMock registry;
+        QObject object001;
+        registry.push_back( &object001 );
+        DummyTestCase object002;
+        registry.push_back( &object002 );
+        QStringList arguments = {"binary_path", "Dummy*::function001"};
 
         const int ret = registry.run_tests(arguments);
         QCOMPARE(ret, 1);
@@ -179,7 +191,7 @@ private slots:
         TestsRegistryMock registry;
         QObject object001;
         registry.push_back( &object001 );
-        ObjectWithFunctions object002;
+        DummyTestCase object002;
         registry.push_back( &object002 );
         QStringList arguments = {"binary_path", "-functions"};
 

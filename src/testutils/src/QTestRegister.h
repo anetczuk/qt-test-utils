@@ -75,9 +75,13 @@ namespace testutils {
 
     QStringList find_methods(const QObject* testCase, const QString& function);
 
+    QStringList find_methods(const QObject* testCase, const QString& className, const QString& functionName);
+
     QStringList find_methods(const QObject* testCase, const QStringList& functions);
 
-    QStringList extract_functions(const QStringList& arguments);
+    QStringList find_methods(const QObject* testCase, const QStringList& classes, const QStringList& functions);
+
+    QStringList extract_functions_from_arguments(const QStringList& arguments);
 
     bool should_show_summary();
 

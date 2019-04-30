@@ -57,9 +57,31 @@ namespace testutils {
     }
 
     QStringList find_methods(const QObject* testCase, const QString& function) {
-        QString pattern = function;
+        return find_methods(testCase, "", function);
+    }
+
+    QRegularExpression prepare_regex(const QString& namePattern) {
+        QString pattern = namePattern;
         pattern.replace("*", ".*");
         QRegularExpression re( pattern );
+        return re;
+    }
+
+    QStringList find_methods(const QObject* testCase, const QString& className, const QString& functionName) {
+        QRegularExpression classRE;
+        if (className.isEmpty() == false)
+            classRE = prepare_regex( className );
+        else
+            classRE = prepare_regex( "*" );
+
+        const QString testName = testCase->metaObject()->className();
+        QRegularExpressionMatch classMatch = classRE.match( testName );
+        if (classMatch.hasMatch() == false) {
+            // class does not match
+            return QStringList();
+        }
+
+        QRegularExpression functionRE = prepare_regex( functionName );
 
         QStringList retList;
         const QMetaObject* meta = testCase->metaObject();
@@ -79,7 +101,7 @@ namespace testutils {
                 // internal Qt member
                 continue;
             }
-            QRegularExpressionMatch match = re.match( mName );
+            QRegularExpressionMatch match = functionRE.match( mName );
             if (match.hasMatch()) {
                 retList.append( mName );
             }
@@ -98,7 +120,19 @@ namespace testutils {
         return retList;
     }
 
-    QStringList extract_functions(const QStringList& arguments) {
+    QStringList find_methods(const QObject* testCase, const QStringList& classes, const QStringList& functions) {
+        QStringList retList;
+        const int aSize = functions.size();
+        for(int i=0; i<aSize; ++i) {
+            const QString& className = classes[i];
+            const QString& funcName = functions[i];
+            const QStringList names = find_methods(testCase, className, funcName);
+            retList.append( names );
+        }
+        return retList;
+    }
+
+    QStringList extract_functions_from_arguments(const QStringList& arguments) {
         QStringList functions;
 
         const int aSize = arguments.size();
@@ -140,6 +174,26 @@ namespace testutils {
     // ======================================================
 
 
+    QPair<QStringList, QStringList> split_functions(const QStringList& functionsList) {
+        QStringList classes;
+        QStringList functions;
+        for(const QString& item: functionsList) {
+            //commonArgs.removeAll(item);
+            QStringList parts = item.split("::");
+            if (parts.size() == 1) {
+                // no class given
+                classes.append("");
+                functions.append( parts[0] );
+            } else if (parts.size() == 2) {
+                // with class
+                classes.append( parts[0] );
+                functions.append( parts[1] );
+            }
+        }
+        QPair<QStringList, QStringList> ret( classes, functions );
+        return ret;
+    }
+
     TestsRegistry::TestsRegistry(): casesList(), listFunctionsMode(false) {
     }
 
@@ -155,14 +209,15 @@ namespace testutils {
             for (std::size_t i = 0; i<registrySize; ++i) {
                 QObject* testCase = get(i);
                 const QStringList methods = find_methods( testCase, "*" );
+                const std::string className = testCase->metaObject()->className();
                 for (auto item: methods) {
-                    qInfo().noquote() << item;
+                    qInfo().noquote().nospace() << className.c_str() << "::" << item << "()";
                 }
             }
             return 0;
         }
 
-        const QStringList functions = extract_functions(arguments);
+        const QStringList functions = extract_functions_from_arguments(arguments);
         if (functions.size()<1) {
             //run all tests
             int status = 0;
@@ -174,14 +229,16 @@ namespace testutils {
         }
 
         QStringList commonArgs = arguments;
-        for(auto item: functions) {
+        for(const QString& item: functions) {
             commonArgs.removeAll(item);
         }
+
+        const QPair<QStringList, QStringList> class_function = split_functions(functions);
 
         int status = 0;
         for (std::size_t i = 0; i<registrySize; ++i) {
             QObject* testCase = get(i);
-            const QStringList foundMethods = find_methods( testCase, functions );
+            const QStringList foundMethods = find_methods( testCase, class_function.first, class_function.second );
             if (foundMethods.size() < 1) {
                 // test case does not have searching functions
                 continue;
