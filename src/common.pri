@@ -37,7 +37,12 @@ defineTest(linkStaticLibrary) {
     !exists( $$LIB_DIR ) {
           message( "Static lib build dir not found:" $$LIB_DIR)
     }
-    LIB_PATH = "$$LIB_DIR/lib$$lib_target_name"".a"
+    win32 {
+        LIB_PATH = "$$LIB_DIR/$$lib_target_name"".lib"
+    } else {
+        ## unix/macx
+        LIB_PATH = "$$LIB_DIR/lib$$lib_target_name"".a"
+    }
     !exists( $$LIB_PATH ) {
           message( "Static lib not found:" $$LIB_PATH)
     }
