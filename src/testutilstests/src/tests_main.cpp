@@ -22,6 +22,34 @@
 ///
 
 #include "QTestRegister.h"
+#include <QtQuickTest/quicktest.h>
+#include <iostream>
 
 
-QTEST_RUN_TESTS()
+QT_BEGIN_NAMESPACE
+QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS
+QT_END_NAMESPACE
+
+int main(int argc, char *argv[]) {
+    QApplication app(argc, argv);
+
+    QTEST_DISABLE_KEYPAD_NAVIGATION
+    QTEST_ADD_GPU_BLACKLIST_SUPPORT
+    QTEST_SET_MAIN_SOURCE_PATH
+
+    const int statusCpp = testutils::run_registered_tests(argc, argv);
+
+    std::cout << std::endl;
+
+    const int statusQml = quick_test_main(argc, argv, "qmltests", nullptr);
+
+    if (testutils::should_show_summary()) {
+        std::cout << std::endl;
+        std::cout << "********* Summary *********" << std::endl;
+        std::cout << "     cpp failures: " << statusCpp << std::endl;
+        std::cout << "     qml failures: " << statusQml << std::endl;
+        std::cout << "   total failures: " << statusQml << std::endl;
+        std::cout << "********* Finished summary *********" << std::endl;
+    }
+    return std::min(statusCpp+statusQml, 127);
+}

@@ -79,6 +79,8 @@ namespace testutils {
 
     QStringList extract_functions(const QStringList& arguments);
 
+    bool should_show_summary();
+
 
     // ======================================================
 
@@ -99,11 +101,12 @@ namespace testutils {
     class TestsRegistry {
 
         std::vector<QObject*> casesList;
+        bool listFunctionsMode;
+
 
     public:
 
-        TestsRegistry(): casesList() {
-        }
+        TestsRegistry();
 
         const QObject* operator [](const std::size_t index) const {
             return casesList[index];
@@ -115,6 +118,10 @@ namespace testutils {
 
         std::size_t size() const {
             return casesList.size();
+        }
+
+        bool is_functions_list_mode() const {
+            return listFunctionsMode;
         }
 
         const QObject* get(const std::size_t index) const {

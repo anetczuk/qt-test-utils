@@ -131,9 +131,17 @@ namespace testutils {
         return functions;
     }
 
+    bool should_show_summary() {
+        TestsRegistry& testsRegistry = get_tests_registry();
+        return (testsRegistry.is_functions_list_mode() == false);
+    }
+
 
     // ======================================================
 
+
+    TestsRegistry::TestsRegistry(): casesList(), listFunctionsMode(false) {
+    }
 
     int TestsRegistry::run_tests(const QStringList& arguments) {
         const std::size_t registrySize = size();
@@ -143,6 +151,7 @@ namespace testutils {
 
         if (arguments.contains("-functions")) {
             // print functions
+            listFunctionsMode = true;
             for (std::size_t i = 0; i<registrySize; ++i) {
                 QObject* testCase = get(i);
                 const QStringList methods = find_methods( testCase, "*" );
