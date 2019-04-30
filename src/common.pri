@@ -37,12 +37,9 @@ defineTest(linkStaticLibrary) {
     !exists( $$LIB_DIR ) {
           message( "Static lib build dir not found:" $$LIB_DIR)
     }
-    win32 {
-        LIB_PATH = "$$LIB_DIR/$$lib_target_name"".lib"
-    } else {
-        ## unix/macx
-        LIB_PATH = "$$LIB_DIR/lib$$lib_target_name"".a"
-    }
+    LIB_FILE_NAME = $$staticLibName($$lib_target_name)
+    LIB_PATH = $$LIB_DIR/$$LIB_FILE_NAME
+    message("lib path:" $$LIB_PATH )
     !exists( $$LIB_PATH ) {
           message( "Static lib not found:" $$LIB_PATH)
     }
@@ -58,4 +55,17 @@ defineTest(linkStaticLibrary) {
     export(LIBS)
     export(INCLUDEPATH)
     export(PRE_TARGETDEPS)
+}
+
+
+defineReplace(staticLibName) {
+    lib_target_name = $$1
+    lib_name = ""
+    win32 {
+        lib_name = "$$lib_target_name"".lib"
+    } else {
+        ## unix/macx
+        lib_name = "lib$$lib_target_name"".a"
+    }
+    return ($$lib_name)
 }
