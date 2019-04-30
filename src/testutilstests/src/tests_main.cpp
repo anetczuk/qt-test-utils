@@ -41,15 +41,9 @@ int main(int argc, char *argv[]) {
 
     std::cout << std::endl;
 
-    const int statusQml = quick_test_main(argc, argv, "qmltests", nullptr);
+    const int statusQml = quick_test_main(argc, argv, "qmltests", QUICK_TEST_SOURCE_DIR);
 
-    if (testutils::should_show_summary()) {
-        std::cout << std::endl;
-        std::cout << "********* Summary *********" << std::endl;
-        std::cout << "     cpp failures: " << statusCpp << std::endl;
-        std::cout << "     qml failures: " << statusQml << std::endl;
-        std::cout << "   total failures: " << statusQml << std::endl;
-        std::cout << "********* Finished summary *********" << std::endl;
-    }
+    testutils::print_summary(statusCpp, statusQml);
+
     return std::min(statusCpp+statusQml, 127);
 }

@@ -85,6 +85,8 @@ namespace testutils {
 
     bool should_show_summary();
 
+    void print_summary(const int cppStatus, const int qmlStatus);
+
 
     // ======================================================
 

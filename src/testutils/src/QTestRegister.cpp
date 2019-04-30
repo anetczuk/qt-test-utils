@@ -21,6 +21,7 @@
 /// SOFTWARE.
 
 #include "QTestRegister.h"
+#include <iostream>
 
 
 namespace testutils {
@@ -168,6 +169,18 @@ namespace testutils {
     bool should_show_summary() {
         TestsRegistry& testsRegistry = get_tests_registry();
         return (testsRegistry.is_functions_list_mode() == false);
+    }
+
+    void print_summary(const int cppStatus, const int qmlStatus) {
+        if (should_show_summary() == false) {
+            return ;
+        }
+        std::cout << std::endl;
+        std::cout << "********* Summary *********" << std::endl;
+        std::cout << "     cpp failures: " << cppStatus << std::endl;
+        std::cout << "     qml failures: " << qmlStatus << std::endl;
+        std::cout << "   total failures: " << (cppStatus+qmlStatus) << std::endl;
+        std::cout << "********* Finished summary *********" << std::endl;
     }
 
 
