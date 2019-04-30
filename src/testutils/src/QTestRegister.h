@@ -114,6 +114,9 @@ namespace testutils {
 
         TestsRegistry();
 
+        virtual ~TestsRegistry() {
+        }
+
         const QObject* operator [](const std::size_t index) const {
             return casesList[index];
         }

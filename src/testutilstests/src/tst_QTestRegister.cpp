@@ -125,6 +125,9 @@ public:
     TestsRegistryMock(): TestsRegistry() {
     }
 
+    virtual ~TestsRegistryMock() {
+    }
+
 
 protected:
 
