@@ -187,24 +187,93 @@ namespace testutils {
     // ======================================================
 
 
-    QPair<QStringList, QStringList> split_functions(const QStringList& functionsList) {
-        QStringList classes;
-        QStringList functions;
+    struct FunctionParam {
+        enum Valid {
+            V_None,
+            V_Func,
+            V_Class,
+            V_Both
+        };
+
+        Valid state;
+        QString className;
+        QString funcName;
+
+        FunctionParam(): state(V_None), className(""), funcName("") {
+        }
+
+        static FunctionParam createFromClass(const QString& className) {
+            FunctionParam ret;
+            ret.className = className;
+            ret.state = V_Class;
+            return ret;
+        }
+        static FunctionParam createFromFunction(const QString& funcName) {
+            FunctionParam ret;
+            ret.funcName = funcName;
+            ret.state = V_Func;
+            return ret;
+        }
+        static FunctionParam createFromBoth(const QString& className, const QString& funcName) {
+            FunctionParam ret;
+            ret.className = className;
+            ret.funcName = funcName;
+            ret.state = V_Both;
+            return ret;
+        }
+    };
+
+
+    std::vector<FunctionParam> split_functions(const QStringList& functionsList) {
+        std::vector<FunctionParam> ret;
+        ret.reserve( (std::size_t)functionsList.size() );
         for(const QString& item: functionsList) {
             //commonArgs.removeAll(item);
             QStringList parts = item.split("::");
             if (parts.size() == 1) {
                 // no class given
-                classes.append("");
-                functions.append( parts[0] );
+                FunctionParam param = FunctionParam::createFromFunction( parts[0] );
+                ret.push_back( param );
             } else if (parts.size() == 2) {
                 // with class
-                classes.append( parts[0] );
-                functions.append( parts[1] );
+                FunctionParam param = FunctionParam::createFromBoth( parts[0], parts[1] );
+                ret.push_back( param );
             }
         }
-        QPair<QStringList, QStringList> ret( classes, functions );
         return ret;
+    }
+
+    QStringList find_methods(const QObject* testCase, const std::vector<FunctionParam>& functionsParams) {
+        QStringList retList;
+        for(const FunctionParam& item: functionsParams) {
+            switch(item.state) {
+            case FunctionParam::V_None:
+                break;       // invalid param
+            case FunctionParam::V_Class: {
+                const QStringList names = find_methods(testCase, item.className, "*");
+                retList.append( names );
+                break;
+            }
+            case FunctionParam::V_Func: {
+                const QStringList fNames = find_methods(testCase, "*", item.funcName);
+                retList.append( fNames );
+                const QStringList cNames = find_methods(testCase, item.funcName, "*");
+                retList.append( cNames );
+                break;
+            }
+            case FunctionParam::V_Both: {
+                const QStringList names = find_methods(testCase, item.className, item.funcName);
+                retList.append( names );
+                break;
+            }
+            }
+        }
+
+        // remove duplicates
+        QSet<QString> stringSet = retList.toSet();
+        retList = stringSet.toList();
+
+        return retList;
     }
 
     TestsRegistry::TestsRegistry(): casesList(), listFunctionsMode(false) {
@@ -246,12 +315,12 @@ namespace testutils {
             commonArgs.removeAll(item);
         }
 
-        const QPair<QStringList, QStringList> class_function = split_functions(functions);
+        const std::vector<FunctionParam> class_function = split_functions(functions);
 
         int status = 0;
         for (std::size_t i = 0; i<registrySize; ++i) {
             QObject* testCase = get(i);
-            const QStringList foundMethods = find_methods( testCase, class_function.first, class_function.second );
+            const QStringList foundMethods = find_methods( testCase, class_function );
             if (foundMethods.size() < 1) {
                 // test case does not have searching functions
                 continue;

@@ -190,6 +190,18 @@ private slots:
         QCOMPARE(ret, 1);
     }
 
+    void test_run_tests_filtered_class() {
+        TestsRegistryMock registry;
+        QObject object001;
+        registry.push_back( &object001 );
+        DummyTestCase object002;
+        registry.push_back( &object002 );
+        QStringList arguments = {"binary_path", "Dummy*"};
+
+        const int ret = registry.run_tests(arguments);
+        QCOMPARE(ret, 1);
+    }
+
     void test_run_tests_list_functions() {
         TestsRegistryMock registry;
         QObject object001;
