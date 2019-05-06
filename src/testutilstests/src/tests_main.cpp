@@ -25,6 +25,8 @@
 #include <QtQuickTest/quicktest.h>
 #include <iostream>
 
+#include "ImageLoader.h"
+
 
 QT_BEGIN_NAMESPACE
 QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS
@@ -36,6 +38,9 @@ int main(int argc, char *argv[]) {
     QTEST_DISABLE_KEYPAD_NAVIGATION
     QTEST_ADD_GPU_BLACKLIST_SUPPORT
     QTEST_SET_MAIN_SOURCE_PATH
+
+    qmlRegisterSingletonType<ImageLoader>("testutils", 1, 0, "ImageLoader", &ImageLoader::qmlInstance);
+    qmlRegisterInterface<QmlImage>("QmlImage");
 
     const int statusCpp = testutils::run_registered_tests(argc, argv);
 
