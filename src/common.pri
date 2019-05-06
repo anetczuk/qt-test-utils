@@ -22,6 +22,8 @@ BUILD_DIR = .
 #}
 
 
+# QMAKE_SUBSTITUTES
+
 
 # linkStaticLibrary(lib_build_dir, lib_target_name):
 # Link static library to the project that depend on other library
@@ -68,4 +70,39 @@ defineReplace(staticLibName) {
         lib_name = "lib$$lib_target_name"".a"
     }
     return ($$lib_name)
+}
+
+
+##
+## params:
+##      out_file_path   - path to output resource file
+##      qml_files_list  - list of qml files
+##      prefix          - prefix
+##
+defineTest(generateResFile) {
+    file_path = $$1
+    content = $$2
+    prefix = $$3
+    files_prefix = ""
+    isEmpty(prefix) {
+        prefix = "/"
+    } else {
+        files_prefix = $$prefix
+    }
+
+#    message( "xxx:" $$file_path $$content )
+
+    FILE_TEMPLATE  = ""
+    FILE_TEMPLATE += "<RCC>"
+    ##FILE_TEMPLATE += "    <qresource prefix=\""$$prefix"\">"
+    FILE_TEMPLATE += "    <qresource prefix=\"/\">"
+    for(FILENAME, content){
+        ##FILE_TEMPLATE += "        <file>"$$prefix$$FILENAME"</file>"
+        FILE_TEMPLATE += "        <file alias=\""$$FILENAME"\">"$$prefix$$FILENAME"</file>"
+    }
+    FILE_TEMPLATE += "    </qresource>"
+    FILE_TEMPLATE += "</RCC>"
+
+    message( "generating resource file: " $$file_path )
+    write_file( $$file_path, FILE_TEMPLATE )
 }
