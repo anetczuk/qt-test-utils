@@ -22,13 +22,14 @@
 ##
 
 TEMPLATE = app
-TARGET = tests
+TARGET = testutilstests
 
 QT += qml quick widgets testlib
 
-include(../common.pri)
-
 CONFIG += c++11 qmltestcase
+
+
+include(../common.pri)
 
 
 HEADERS += $$files(src/*.h, true)
@@ -36,16 +37,21 @@ HEADERS += $$files(src/*.h, true)
 SOURCES += $$files(src/*.cpp, true)
 
 QML_FILES = $$files(qml/*.qml, true)
-##RESOURCES += $$QML_FILES
-GEN_RES_PATH = gen/res.qrc
+GEN_RES_PATH = "gen/$$PROJECT_NAME""res.qrc"
 generateResFile($$GEN_RES_PATH, $$QML_FILES, "../")
-RESOURCES += $$GEN_RES_PATH
 
 
 ## copy data dir
 copydata.commands = $(COPY_DIR) $$PWD/data $$OUT_PWD
 QMAKE_EXTRA_TARGETS += copydata
-PRE_TARGETDEPS += copydata
+POST_TARGETDEPS += copydata
+
+
+## create tests results dir
+#resultsdir.target = $$OUT_PWD/tests
+resultsdir.commands = $(MKDIR) $$OUT_PWD/tests/screens
+QMAKE_EXTRA_TARGETS += resultsdir
+POST_TARGETDEPS += resultsdir
 
 
 # include library

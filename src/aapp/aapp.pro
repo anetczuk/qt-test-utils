@@ -19,15 +19,17 @@
 ## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 ## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ## SOFTWARE.
+##
 
 TEMPLATE = app
 TARGET = aproject
 
 QT += qml quick gui
 
-include(../common.pri)
-
 CONFIG += c++11
+
+
+include(../common.pri)
 
 
 HEADERS += $$files(src/*.h, true)

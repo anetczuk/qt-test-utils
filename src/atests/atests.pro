@@ -26,14 +26,10 @@ TARGET = tests
 
 QT += qml quick widgets testlib
 
-include(../common.pri)
-
 CONFIG += c++11
 
 
-#RESOURCES += src/eclipse-qt.qrc
-
-#qml.files = src/eclipse-qt.qml
+include(../common.pri)
 
 
 HEADERS += $$files(src/*.h, true)

@@ -21,6 +21,7 @@
 ## SOFTWARE.
 ##
 
+
 ##
 ## Common configuration for subprojects
 ##
@@ -31,6 +32,11 @@
 #CONFIG += debug_and_release debug_and_release_target
 
 ## QtCreator's Profile mode is configured as Release
+
+
+PROJECT_FILE = $$basename(_PRO_FILE_)
+_PROJECT_FILE_PARTS_ = $$split(PROJECT_FILE, ".")
+PROJECT_NAME = $$first(_PROJECT_FILE_PARTS_)
 
 
 SOURCE_ROOT_DIR = $$PWD
@@ -128,4 +134,7 @@ defineTest(generateResFile) {
 
     message( "generating resource file: " $$file_path )
     write_file( $$file_path, FILE_TEMPLATE )
+
+    RESOURCES += $$file_path
+    export(RESOURCES)
 }
