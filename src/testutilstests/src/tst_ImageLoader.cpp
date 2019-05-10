@@ -51,7 +51,7 @@ private slots:
     }
 
     void test_makeDiff_same() {
-        QmlImage image("data/blue.png");
+        const QmlImage image("data/blue.png");
         QVERIFY( image.empty() == false );
 
         ImageLoader loader;
@@ -68,80 +68,80 @@ private slots:
     }
 
     void test_makeDiff_diff() {
-        QmlImage imageA("data/red.png");
+        const QmlImage imageA("data/red.png");
         QVERIFY( !imageA.empty() );
 
-        QmlImage imageB("data/blue.png");
+        const QmlImage imageB("data/blue.png");
         QVERIFY( !imageB.empty() );
 
         ImageLoader loader;
 
-        QmlImage* result = loader.makeDiff(imageA, imageB);
+        const QmlImage* result = loader.makeDiff(imageA, imageB);
         QVERIFY( result != nullptr );
 
 //        result->save("tests/red_blue_diff.png");
 
-        QmlImage data("data/diff/red_blue_diff.png");
+        const QmlImage data("data/diff/red_blue_diff.png");
         QVERIFY( data.empty() == false );
 
         QVERIFY( result->equals( data ) );
     }
 
     void test_makeDiff_emptyA() {
-        QmlImage imageA;                    // empty
+        const QmlImage imageA;                    // empty
         QVERIFY( imageA.empty() );
 
-        QmlImage imageB("data/blue.png");
+        const QmlImage imageB("data/blue.png");
         QVERIFY( !imageB.empty() );
 
         ImageLoader loader;
 
-        QmlImage* result = loader.makeDiff(imageA, imageB);
+        const QmlImage* result = loader.makeDiff(imageA, imageB);
         QVERIFY( result != nullptr );
 
 //        result->save("tests/emptyA_diff.png");
 
-        QmlImage data("data/diff/emptyA_diff.png");
+        const QmlImage data("data/diff/emptyA_diff.png");
         QVERIFY( data.empty() == false );
 
         QVERIFY( result->equals( data ) );
     }
 
     void test_makeDiff_emptyB() {
-        QmlImage imageA("data/blue.png");
+        const QmlImage imageA("data/blue.png");
         QVERIFY( !imageA.empty() );
 
-        QmlImage imageB;                    // empty
+        const QmlImage imageB;                    // empty
         QVERIFY( imageB.empty() );
 
         ImageLoader loader;
 
-        QmlImage* result = loader.makeDiff(imageA, imageB);
+        const QmlImage* result = loader.makeDiff(imageA, imageB);
         QVERIFY( result != nullptr );
 
 //        result->save("tests/emptyB_diff.png");
 
-        QmlImage data("data/diff/emptyB_diff.png");
+        const QmlImage data("data/diff/emptyB_diff.png");
         QVERIFY( data.empty() == false );
 
         QVERIFY( result->equals( data ) );
     }
 
     void test_makeDiff_empty_both() {
-        QmlImage imageA;                    // empty
+        const QmlImage imageA;                    // empty
         QVERIFY( imageA.empty() );
 
-        QmlImage imageB;                    // empty
+        const QmlImage imageB;                    // empty
         QVERIFY( imageB.empty() );
 
         ImageLoader loader;
 
-        QmlImage* result = loader.makeDiff(imageA, imageB);
+        const QmlImage* result = loader.makeDiff(imageA, imageB);
         QVERIFY( result != nullptr );
 
 //        result->save("tests/emptyC_diff.png");
 
-        QmlImage data("data/diff/emptyC_diff.png");
+        const QmlImage data("data/diff/emptyC_diff.png");
         QVERIFY( data.empty() == false );
 
         QVERIFY( result->equals( data ) );
