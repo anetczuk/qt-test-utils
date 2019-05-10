@@ -22,7 +22,6 @@
 ///
 
 import QtQuick 2.0
-import QtTest 1.2
 import QtQuick.Controls 2.2
 
 import testutils 1.0
@@ -36,8 +35,8 @@ Rectangle {
     height: 300
 
 
-    TestCase {
-        name: "TestQmlImage"
+    CustomTestCase {
+        name: "QmlImage"
         when: windowShown
 
         function test_grab_size() {
@@ -63,7 +62,7 @@ Rectangle {
         }
 
         function test_save_load() {
-            var imgPath = "test_grab_image.png";
+            var imgPath = output_root_dir + "/test_grab_image.png";
             var img = ImageLoader.grabImage(root);
             img.save( imgPath );
 

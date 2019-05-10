@@ -24,12 +24,19 @@
 #include "QmlImage.h"
 
 #include <QImageWriter>
+#include <QCryptographicHash>
 
 
 bool QmlImage::equals(QmlImage *image) const {
     if (image == nullptr)
         return false;
     return equals( *image );
+}
+
+bool QmlImage::equals(const QmlImage &image) const {
+    const QImage& img = qimage();
+    const QImage& img2 = image.qimage();
+    return (img == img2);
 }
 
 bool QmlImage::equals(QmlImage &image) const {
@@ -54,13 +61,27 @@ bool QmlImage::equals(QObject *image) const {
     return (img == *img2);
 }
 
-void QmlImage::save(const QString& filePath) {
+void QmlImage::save(const QString& filePath) const {
+    if (image.isNull()) {
+        QString message = QStringLiteral("Can't save to %1: empty image").arg(filePath);
+        const std::string msg = message.toStdString();
+        qFatal( "%s", msg.c_str() );
+    }
     QImageWriter writer(filePath);
     if (!writer.write(image)) {
         QString message = QStringLiteral("Can't save to %1: %2").arg(filePath, writer.errorString());
         const std::string msg = message.toStdString();
         qFatal( "%s", msg.c_str() );
     }
+}
+
+QString QmlImage::hash() const {
+    QByteArray byteArray = QByteArray::fromRawData((const char*)image.bits(), image.byteCount());
+    QString data = QString::fromUtf8(byteArray.toBase64().data());
+    QCryptographicHash md5(QCryptographicHash::Md5);
+    md5.addData(data.toUtf8());
+    QString hash = QString(md5.result().toHex());
+    return hash;
 }
 
 const QImage* QmlImage::getImageFromTestImage(const QObject* object) {

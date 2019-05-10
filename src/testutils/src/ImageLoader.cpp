@@ -23,11 +23,97 @@
 
 #include "ImageLoader.h"
 
+#include <QPainter>
+
+
+static QImage::Format format = QImage::Format_RGB32;
+
+
+QImage ImageLoader::makeDiff(const QImage& imgA, const QImage& imgB) {
+    if(imgA.isNull() && imgB.isNull()) {
+        QImage emptyDiff(2, 1, format);
+        emptyDiff.setPixelColor(0, 0, "black");
+        emptyDiff.setPixelColor(1, 0, "black");
+        return emptyDiff;
+    }
+    const int widthA = imgA.width();
+    const int heightA = imgA.height();
+
+    const int widthB = imgB.width();
+    const int heightB = imgB.height();
+
+    const int widthMax = std::max(widthA, widthB);
+    const int heightMax = std::max(heightA, heightB);
+
+    QImage diff(widthMax, heightMax, format);
+    diff.fill( Qt::transparent );
+    {
+        QPainter painter(&diff);
+        painter.setCompositionMode( QPainter::CompositionMode_Difference );
+        painter.drawImage(0, 0, imgA);
+        painter.drawImage(0, 0, imgB);
+    }
+
+    QImage threshold(widthMax, heightMax, format);
+    threshold.fill( Qt::transparent );
+    for (int wo=0; wo<widthMax; wo++) {
+        for (int ho=0; ho<heightMax; ho++) {
+            QRgb color = diff.pixel(wo, ho);
+            if ( qRed(color) > 0 || qGreen(color) > 0 || qBlue(color) > 0 ) {
+                threshold.setPixelColor(wo, ho, "white");
+            } else {
+                threshold.setPixelColor(wo, ho, "black");
+            }
+        }
+    }
+
+    QImage join(widthMax*2, heightMax*2, format);
+    join.fill( Qt::transparent );
+    {
+        QPainter painter(&join);
+        painter.drawImage(0, 0, imgA);
+        painter.drawImage(widthMax, 0, imgB);
+        painter.drawImage(0, heightMax, threshold);
+        painter.drawImage(widthMax, heightMax, diff);
+    }
+
+    return join;
+}
+
+QmlImage* ImageLoader::makeDiff(const QmlImage& imgA, const QmlImage& imgB) {
+    const QImage& imageA = imgA.qimage();
+    const QImage& imageB = imgB.qimage();
+    QImage diff = makeDiff(imageA, imageB);
+    return new QmlImage( diff, this );
+}
+
+QmlImage* ImageLoader::makeDiff(QmlImage& imgA, QmlImage& imgB) {
+    QImage& imageA = imgA.qimage();
+    QImage& imageB = imgB.qimage();
+    QImage diff = makeDiff(imageA, imageB);
+    return new QmlImage( diff, this );
+}
+
+QmlImage* ImageLoader::makeDiff(const QmlImage* imgA, const QmlImage* imgB) {
+    if (imgA == nullptr || imgB == nullptr)
+        return new QmlImage(this);
+    return makeDiff( *imgA, *imgB );
+}
+
+QmlImage* ImageLoader::makeDiff(QmlImage* imgA, QmlImage* imgB) {
+    if (imgA == nullptr || imgB == nullptr)
+        return new QmlImage(this);
+    return makeDiff( *imgA, *imgB );
+}
 
 QObject *ImageLoader::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine) {
     Q_UNUSED(engine);
     Q_UNUSED(scriptEngine);
 
-    static ImageLoader* instance = new ImageLoader();
+    static ImageLoader* instance = nullptr;
+    if (instance == nullptr) {
+        qDebug() << "creating ImageLoader singleton";
+        instance = new ImageLoader();
+    }
     return instance;
 }

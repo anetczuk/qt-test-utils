@@ -46,7 +46,7 @@ private slots:
 
     void test_compare_differ() {
         QmlImage object1;
-        object1.load("data/combo1.png");
+        object1.load("data/red.png");
         QVERIFY( !object1.empty() );
 
         QmlImage object2;

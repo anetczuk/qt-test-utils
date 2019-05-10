@@ -42,6 +42,10 @@ public:
     QmlImage(QImage& aImage, QObject* parent = nullptr): QObject(parent), image(aImage) {
     }
 
+    QmlImage(const QString& filePath, QObject* parent = nullptr): QObject(parent), image() {
+        image.load(filePath);
+    }
+
     virtual ~QmlImage() {
     }
 
@@ -63,6 +67,8 @@ public:
     }
 
     Q_INVOKABLE bool equals(QmlImage *image) const;
+
+    Q_INVOKABLE bool equals(const QmlImage &image) const;
 
     Q_INVOKABLE bool equals(QmlImage &image) const;
 
@@ -129,7 +135,9 @@ public:
         return image.load( path );
     }
 
-    Q_INVOKABLE void save(const QString& filePath);
+    Q_INVOKABLE void save(const QString& filePath) const;
+
+    Q_INVOKABLE QString hash() const;
 
 
 private:

@@ -42,32 +42,57 @@ class ImageLoader: public QObject
 
 public:
 
+    // instance needed for unit tests
+    ImageLoader(): QObject() {
+    }
+
+    virtual ~ImageLoader() {
+    }
+
     Q_INVOKABLE QmlImage* loadImage(const QString& path) {
         QmlImage* obj = new QmlImage(this);
         obj->load(path);
         return obj;
     }
 
+    Q_INVOKABLE QmlImage* saveImageOfItem(QQuickItem *item, const QString& path) {
+        QmlImage* img = grabImage(item);
+        if (img == nullptr)
+            return nullptr;
+        img->save( path );
+        return img;
+    }
+
     Q_INVOKABLE QmlImage* grabImage(QQuickItem *item) {
-        if (item && item->window()) {
-            QQuickWindow *window = item->window();
-            QImage grabbed = window->grabWindow();
-            QRectF rf(item->x(), item->y(), item->width(), item->height());
-            rf = rf.intersected(QRectF(0, 0, grabbed.width(), grabbed.height()));
-            QImage img = grabbed.copy(rf.toAlignedRect());
-            return new QmlImage(img, this);
+        if (item == nullptr) {
+            qDebug() << "unable to grab image from null item";
+            return nullptr;
         }
-        return nullptr;
+        if (item->window() == nullptr) {
+            qDebug() << "unable to grab image from item with no shwon window";
+            return nullptr;
+        }
+        QQuickWindow *window = item->window();
+        QImage grabbed = window->grabWindow();
+        QRectF rf(item->x(), item->y(), item->width(), item->height());
+        rf = rf.intersected(QRectF(0, 0, grabbed.width(), grabbed.height()));
+        QImage img = grabbed.copy(rf.toAlignedRect());
+        return new QmlImage(img, this);
     }
 
+    QmlImage* makeDiff(const QmlImage& imgA, const QmlImage& imgB);
+
+    Q_INVOKABLE QmlImage* makeDiff(QmlImage& imgA, QmlImage& imgB);
+
+    QmlImage* makeDiff(const QmlImage* imgA, const QmlImage* imgB);
+
+    Q_INVOKABLE QmlImage* makeDiff(QmlImage* imgA, QmlImage* imgB);
+
+    QImage makeDiff(const QImage& imgA, const QImage& imgB);
+
+
+    // singleton needed for registration in QML
     static QObject *qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine);
-
-
-private:
-
-    ImageLoader(): QObject() {
-        qDebug() << "creating ImageLoader singleton";
-    }
 
 };
 

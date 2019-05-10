@@ -39,8 +39,11 @@ int main(int argc, char *argv[]) {
     QTEST_ADD_GPU_BLACKLIST_SUPPORT
     QTEST_SET_MAIN_SOURCE_PATH
 
+    Q_INIT_RESOURCE(testutilsres);
+
     qmlRegisterSingletonType<ImageLoader>("testutils", 1, 0, "ImageLoader", &ImageLoader::qmlInstance);
     qmlRegisterInterface<QmlImage>("QmlImage");
+    qmlRegisterType( QUrl("qrc:/qml/CustomTestCase.qml"), "testutils", 1, 0, "CustomTestCase");
 
     const int statusCpp = testutils::run_registered_tests(argc, argv);
 
