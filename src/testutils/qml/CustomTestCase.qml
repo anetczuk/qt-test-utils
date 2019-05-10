@@ -102,18 +102,28 @@ TestCase {
         return -1;
     }
 
-    function compareScreenshots( item ) {
+    function compareScreenshots( item, imagePath ) {
         if (item === undefined) {
             item = TestUtils.getRoot( this );
         }
 
         var screenImage = makeScreenshot( item );
-        var dataImagePath = getDataImagePath( "screens", "Screen" );
 
-        return compareImages( screenImage, dataImagePath );
+        if (imagePath === undefined) {
+            imagePath = getDataImagePath( "screens", "Screen" );
+        }
+
+        var loadedImg = ImageLoader.loadImage( imagePath );
+        if (loadedImg.empty()) {
+            console.debug("could not load image for test:", imagePath);
+        }
+
+        return compareImages( screenImage, imagePath );
     }
 
+
     // ============================================================
+
 
     function _getImage( img ) {
         if (typeof img === "string") {

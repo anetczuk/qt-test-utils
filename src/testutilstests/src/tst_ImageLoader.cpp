@@ -99,7 +99,7 @@ private slots:
         const QmlImage* result = loader.makeDiff(imageA, imageB);
         QVERIFY( result != nullptr );
 
-//        result->save("tests/emptyA_diff.png");
+        result->save("tests/emptyA_diff.png");
 
         const QmlImage data("data/diff/emptyA_diff.png");
         QVERIFY( data.empty() == false );
@@ -119,7 +119,7 @@ private slots:
         const QmlImage* result = loader.makeDiff(imageA, imageB);
         QVERIFY( result != nullptr );
 
-//        result->save("tests/emptyB_diff.png");
+        result->save("tests/emptyB_diff.png");
 
         const QmlImage data("data/diff/emptyB_diff.png");
         QVERIFY( data.empty() == false );
@@ -139,7 +139,7 @@ private slots:
         const QmlImage* result = loader.makeDiff(imageA, imageB);
         QVERIFY( result != nullptr );
 
-//        result->save("tests/emptyC_diff.png");
+        result->save("tests/emptyC_diff.png");
 
         const QmlImage data("data/diff/emptyC_diff.png");
         QVERIFY( data.empty() == false );
@@ -147,6 +147,45 @@ private slots:
         QVERIFY( result->equals( data ) );
     }
 
+    void test_makeDiff_customSize() {
+        QImage imageA(304, 304, QImage::Format_RGB32);
+        imageA.fill("red");
+
+        const QmlImage imageB;                    // empty
+        QVERIFY( imageB.empty() );
+
+        ImageLoader loader;
+
+        const QmlImage* result = loader.makeDiff(imageA, imageB);
+        QVERIFY( result != nullptr );
+
+        result->save("tests/chess_custom_diff.png");
+
+        const QmlImage data("data/diff/chess_custom_diff.png");
+        QVERIFY( data.empty() == false );
+
+        QVERIFY( result->equals( data ) );
+    }
+
+    void test_makeDiff_minSize() {
+        QImage imageA(24, 24, QImage::Format_RGB32);
+        imageA.fill("red");
+
+        const QmlImage imageB;                    // empty
+        QVERIFY( imageB.empty() );
+
+        ImageLoader loader;
+
+        const QmlImage* result = loader.makeDiff(imageA, imageB);
+        QVERIFY( result != nullptr );
+
+        result->save("tests/chess_min_diff.png");
+
+        const QmlImage data("data/diff/chess_min_diff.png");
+        QVERIFY( data.empty() == false );
+
+        QVERIFY( result->equals( data ) );
+    }
 };
 
 QTEST_MAIN(TestImageLoader)

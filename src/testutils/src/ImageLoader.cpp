@@ -29,6 +29,30 @@
 static QImage::Format format = QImage::Format_RGB32;
 
 
+QImage generateChessboard(const int width, const int height) {
+    QImage chess(width, height, format);
+    chess.fill( "black" );
+    QPainter painter(&chess);
+    static const int minGrid = 10;
+    const int imgMinGrid = std::min( width / 3, height / 3 );
+    const int gridSize = (imgMinGrid < minGrid) ? 2 : minGrid;
+    const int wSteps = width / gridSize;
+    const int hSteps = height / gridSize;
+    for (int wo=0; wo<=wSteps; wo++) {
+        const int wrest = wo % 2;
+        for (int ho=0; ho<=hSteps; ho++) {
+            if (ho % 2 == wrest) {
+                const int currWidth = wo*gridSize;
+                const int currHeight = ho*gridSize;
+                painter.fillRect(currWidth, currHeight, gridSize, gridSize, "white");
+            } else {
+                //
+            }
+        }
+    }
+    return chess;
+}
+
 QImage ImageLoader::makeDiff(const QImage& imgA, const QImage& imgB) {
     if(imgA.isNull() && imgB.isNull()) {
         QImage emptyDiff(2, 1, format);
@@ -71,8 +95,18 @@ QImage ImageLoader::makeDiff(const QImage& imgA, const QImage& imgB) {
     join.fill( Qt::transparent );
     {
         QPainter painter(&join);
-        painter.drawImage(0, 0, imgA);
-        painter.drawImage(widthMax, 0, imgB);
+        if (imgA.isNull()) {
+            const QImage chess = generateChessboard(widthMax, heightMax);
+            painter.drawImage(0, 0, chess);
+        } else {
+            painter.drawImage(0, 0, imgA);
+        }
+        if (imgB.isNull()) {
+            const QImage chess = generateChessboard(widthMax, heightMax);
+            painter.drawImage(widthMax, 0, chess);
+        } else {
+            painter.drawImage(widthMax, 0, imgB);
+        }
         painter.drawImage(0, heightMax, threshold);
         painter.drawImage(widthMax, heightMax, diff);
     }
