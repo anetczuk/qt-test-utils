@@ -59,7 +59,7 @@ private slots:
         const QmlImage* result = loader.makeDiff(image, image);
         QVERIFY( result != nullptr );
 
-//        result->save("tests/blue_diff.png");
+//        result->save("tests/diff/blue_diff.png");
 
         const QmlImage data("data/diff/blue_diff.png");
         QVERIFY( data.empty() == false );
@@ -79,7 +79,7 @@ private slots:
         const QmlImage* result = loader.makeDiff(imageA, imageB);
         QVERIFY( result != nullptr );
 
-//        result->save("tests/red_blue_diff.png");
+//        result->save("tests/diff/red_blue_diff.png");
 
         const QmlImage data("data/diff/red_blue_diff.png");
         QVERIFY( data.empty() == false );
@@ -99,7 +99,7 @@ private slots:
         const QmlImage* result = loader.makeDiff(imageA, imageB);
         QVERIFY( result != nullptr );
 
-        result->save("tests/emptyA_diff.png");
+        result->save("tests/diff/emptyA_diff.png");
 
         const QmlImage data("data/diff/emptyA_diff.png");
         QVERIFY( data.empty() == false );
@@ -119,7 +119,7 @@ private slots:
         const QmlImage* result = loader.makeDiff(imageA, imageB);
         QVERIFY( result != nullptr );
 
-        result->save("tests/emptyB_diff.png");
+        result->save("tests/diff/emptyB_diff.png");
 
         const QmlImage data("data/diff/emptyB_diff.png");
         QVERIFY( data.empty() == false );
@@ -139,7 +139,7 @@ private slots:
         const QmlImage* result = loader.makeDiff(imageA, imageB);
         QVERIFY( result != nullptr );
 
-        result->save("tests/emptyC_diff.png");
+        result->save("tests/diff/emptyC_diff.png");
 
         const QmlImage data("data/diff/emptyC_diff.png");
         QVERIFY( data.empty() == false );
@@ -159,7 +159,7 @@ private slots:
         const QmlImage* result = loader.makeDiff(imageA, imageB);
         QVERIFY( result != nullptr );
 
-        result->save("tests/chess_custom_diff.png");
+        result->save("tests/diff/chess_custom_diff.png");
 
         const QmlImage data("data/diff/chess_custom_diff.png");
         QVERIFY( data.empty() == false );
@@ -179,7 +179,7 @@ private slots:
         const QmlImage* result = loader.makeDiff(imageA, imageB);
         QVERIFY( result != nullptr );
 
-        result->save("tests/chess_min_diff.png");
+        result->save("tests/diff/chess_min_diff.png");
 
         const QmlImage data("data/diff/chess_min_diff.png");
         QVERIFY( data.empty() == false );
