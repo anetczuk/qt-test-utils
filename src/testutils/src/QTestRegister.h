@@ -107,7 +107,7 @@ namespace testutils {
     class TestsRegistry {
 
         std::vector<QObject*> casesList;
-        bool listFunctionsMode;
+        bool showSummaryMode;
 
 
     public:
@@ -129,8 +129,8 @@ namespace testutils {
             return casesList.size();
         }
 
-        bool is_functions_list_mode() const {
-            return listFunctionsMode;
+        bool should_show_summary() const {
+            return showSummaryMode;
         }
 
         const QObject* get(const std::size_t index) const {

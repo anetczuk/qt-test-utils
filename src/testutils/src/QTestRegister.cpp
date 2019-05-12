@@ -169,7 +169,7 @@ namespace testutils {
 
     bool should_show_summary() {
         TestsRegistry& testsRegistry = get_tests_registry();
-        return (testsRegistry.is_functions_list_mode() == false);
+        return testsRegistry.should_show_summary();
     }
 
     void print_summary(const int cppStatus, const int qmlStatus) {
@@ -277,7 +277,7 @@ namespace testutils {
         return retList;
     }
 
-    TestsRegistry::TestsRegistry(): casesList(), listFunctionsMode(false) {
+    TestsRegistry::TestsRegistry(): casesList(), showSummaryMode(true) {
     }
 
     int TestsRegistry::run_tests(const QStringList& arguments) {
@@ -286,9 +286,12 @@ namespace testutils {
             qWarning() << "no registered tests found";
         }
 
+        if (arguments.contains("-xml")) {
+            showSummaryMode = false;
+        }
         if (arguments.contains("-functions")) {
             // print functions
-            listFunctionsMode = true;
+            showSummaryMode = false;
             for (std::size_t i = 0; i<registrySize; ++i) {
                 QObject* testCase = get(i);
                 const QStringList methods = find_methods( testCase, "*" );
