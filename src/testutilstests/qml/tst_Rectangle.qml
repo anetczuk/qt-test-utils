@@ -49,18 +49,29 @@ Rectangle {
             width: 100
             height: 100
 
-
             CustomTestCase {
-                name: "Rectangle"
+                name: "RectangleSize"
                 when: windowShown
 
-                function test_screen() {
-                    var status = this.compareScreenshots();
-                    compare( status, 0 );
+                function test_width() {
+                    compare( parent.width, 100 );
                 }
 
+                function test_height() {
+                    compare( parent.height, 100 );
+                }
             }
+
         }
     }
 
+    CustomTestCase {
+        name: "RectangleScreen"
+        when: windowShown
+
+        function test_screen() {
+            var status = this.compareScreenshots();
+            compare( status, 0 );
+        }
+    }
 }

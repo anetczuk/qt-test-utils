@@ -36,9 +36,11 @@ HEADERS += $$files(src/*.h, true)
 
 SOURCES += $$files(src/*.cpp, true)
 
-QML_FILES = $$files(qml/*.qml, true)
-GEN_RES_PATH = "gen/$$PROJECT_NAME""res.qrc"
-generateResFile($$GEN_RES_PATH, $$QML_FILES, "../")
+DISTFILES += $$files(qml/*.qml, true)
+
+#QML_FILES = $$files(qml/*.qml, true)
+#GEN_RES_PATH = "gen/$$PROJECT_NAME""res.qrc"
+#generateResFile($$GEN_RES_PATH, $$QML_FILES, "../")
 
 
 ## copy data dir
