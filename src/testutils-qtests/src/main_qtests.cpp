@@ -22,22 +22,20 @@
 ///
 
 #include "QTestRegister.h"
-//#include <QtQuickTest/quicktest.h>
-//#include <iostream>
 
 
-QT_BEGIN_NAMESPACE
-QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS
-QT_END_NAMESPACE
+QTEST_RUN_TESTS()
 
-int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
+//QT_BEGIN_NAMESPACE
+//QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS
+//QT_END_NAMESPACE
 
-    QTEST_DISABLE_KEYPAD_NAVIGATION
-    QTEST_ADD_GPU_BLACKLIST_SUPPORT
-    QTEST_SET_MAIN_SOURCE_PATH
+//int main(int argc, char *argv[]) {
+//    QApplication app(argc, argv);
 
-    Q_INIT_RESOURCE(testutilsres);
+//    QTEST_DISABLE_KEYPAD_NAVIGATION
+//    QTEST_ADD_GPU_BLACKLIST_SUPPORT
+//    QTEST_SET_MAIN_SOURCE_PATH
 
-    return testutils::run_registered_tests(argc, argv);
-}
+//    return testutils::run_registered_tests(argc, argv);
+//}
