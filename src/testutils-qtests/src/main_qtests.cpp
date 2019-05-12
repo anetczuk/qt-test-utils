@@ -22,10 +22,8 @@
 ///
 
 #include "QTestRegister.h"
-#include <QtQuickTest/quicktest.h>
-#include <iostream>
-
-#include "ImageLoader.h"
+//#include <QtQuickTest/quicktest.h>
+//#include <iostream>
 
 
 QT_BEGIN_NAMESPACE
@@ -41,17 +39,5 @@ int main(int argc, char *argv[]) {
 
     Q_INIT_RESOURCE(testutilsres);
 
-    qmlRegisterSingletonType<ImageLoader>("testutils", 1, 0, "ImageLoader", &ImageLoader::qmlInstance);
-    qmlRegisterInterface<QmlImage>("QmlImage");
-    qmlRegisterType( QUrl("qrc:/qml/CustomTestCase.qml"), "testutils", 1, 0, "CustomTestCase");
-
-    const int statusCpp = testutils::run_registered_tests(argc, argv);
-
-    std::cout << std::endl;
-
-    const int statusQml = quick_test_main(argc, argv, "qmltests", QUICK_TEST_SOURCE_DIR);
-
-    testutils::print_summary(statusCpp, statusQml);
-
-    return std::min(statusCpp+statusQml, 127);
+    return testutils::run_registered_tests(argc, argv);
 }

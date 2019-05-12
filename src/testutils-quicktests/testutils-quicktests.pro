@@ -21,18 +21,41 @@
 ## SOFTWARE.
 ##
 
-TEMPLATE = subdirs
+TEMPLATE = app
+TARGET = testutilstests
 
-SUBDIRS = library aapp testutils testutils-qtests testutils-quicktests tests
+QT += qml quick widgets testlib
+
+CONFIG += c++11 qmltestcase
 
 
-library.subdir = alib
+include(../common.pri)
 
-aapp.depends = library
 
-testutils-qtests.depends = testutils
+HEADERS += $$files(src/*.h, true)
 
-testutils-quicktests.depends = testutils
+SOURCES += $$files(src/*.cpp, true)
 
-tests.subdir = atests
-tests.depends = library testutils
+OTHER_FILES += $$files(qml/*.qml, true)
+OTHER_FILES += $$files(data/*.*, true)
+
+#QML_FILES = $$files(qml/*.qml, true)
+#GEN_RES_PATH = "gen/$$PROJECT_NAME""res.qrc"
+#generateResFile($$GEN_RES_PATH, $$QML_FILES, "../")
+
+
+## copy data dir
+copydata.commands = $(COPY_DIR) $$PWD/data $$OUT_PWD
+QMAKE_EXTRA_TARGETS += copydata
+POST_TARGETDEPS += copydata
+
+
+## create tests results dir
+#resultsdir.target = $$OUT_PWD/tests
+resultsdir.commands = $(MKDIR) $$OUT_PWD/tests/screens; $(MKDIR) $$OUT_PWD/tests/diff
+QMAKE_EXTRA_TARGETS += resultsdir
+POST_TARGETDEPS += resultsdir
+
+
+# include library
+linkStaticLibrary(testutils)

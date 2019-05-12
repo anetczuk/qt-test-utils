@@ -49,12 +49,5 @@ QMAKE_EXTRA_TARGETS += copydata
 POST_TARGETDEPS += copydata
 
 
-## create tests results dir
-#resultsdir.target = $$OUT_PWD/tests
-resultsdir.commands = $(MKDIR) $$OUT_PWD/tests/screens; $(MKDIR) $$OUT_PWD/tests/diff
-QMAKE_EXTRA_TARGETS += resultsdir
-POST_TARGETDEPS += resultsdir
-
-
 # include library
 linkStaticLibrary(testutils)
