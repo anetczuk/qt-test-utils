@@ -23,14 +23,14 @@
 
 TEMPLATE = subdirs
 
-SUBDIRS = library aapp testutils testutilstests tests
+SUBDIRS = library aapp testutils testutils-qtests tests
 
 
 library.subdir = alib
 
 aapp.depends = library
 
-testutilstests.depends = testutils
+testutils-qtests.depends = testutils
 
 tests.subdir = atests
 tests.depends = library testutils
