@@ -24,8 +24,8 @@
 import QtQuick 2.0
 import QtTest 1.2
 
-import testutils 1.0
-
+//import testutils 1.0
+import "qrc:/qml"
 import "qrc:/qml/js/TestUtils.js" as TestUtils
 
 
@@ -51,7 +51,7 @@ Rectangle {
 
 
             CustomTestCase {
-                name: "TestUtilsCase"
+                name: "TestUtils"
                 when: windowShown
 
                 function test_getRoot() {

@@ -25,7 +25,6 @@ import QtQuick 2.0
 import QtTest 1.2
 
 import testutils 1.0
-
 import "js/TestUtils.js" as TestUtils
 
 
@@ -35,10 +34,6 @@ TestCase {
     readonly property string output_root_dir: "tests"
     readonly property string data_root_dir:   "data"
 
-
-    Component.onCompleted: {
-//        TestUtils.listProperties( this );
-    }
 
     function getImagePath( dir, suffix ) {
         var filePath = dir;
@@ -61,7 +56,9 @@ TestCase {
         return getImagePath( output_root_dir + "/" + subdir, suffix );
     }
 
+
     // ============================================================
+
 
     function loadImage( path ) {
         return ImageLoader.loadImage( path )
@@ -80,7 +77,9 @@ TestCase {
         return ImageLoader.saveImageOfItem( root, path )
     }
 
+
     // ============================================================
+
 
     function compareImages(imgA, imgB, diffSuffix) {
         var imageA = _getImage(imgA);

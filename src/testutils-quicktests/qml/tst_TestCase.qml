@@ -24,6 +24,10 @@
 import QtQuick 2.0
 import QtTest 1.2
 
+//import testutils 1.0
+//import "qrc:/qml"
+//import "qrc:/qml/js/TestUtils.js" as TestUtils
+
 
 Rectangle {
     id: root
@@ -37,19 +41,23 @@ Rectangle {
         when: windowShown
 
         function init() {
-            console.log("init");
+            // before each test function
+            //console.log("init");
         }
 
         function initTestCase() {
-            console.log("init test case");
+            // only once
+            //console.log("init test case");
         }
 
         function cleanup() {
-            console.log("cleaning up");
+            // after each test function
+            //console.log("cleaning up");
         }
 
         function cleanupTestCase() {
-            console.log("cleaning up test case");
+            // only once
+            //console.log("cleaning up test case");
         }
 
         function test_height() {

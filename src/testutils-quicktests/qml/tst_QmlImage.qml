@@ -25,6 +25,8 @@ import QtQuick 2.0
 import QtQuick.Controls 2.2
 
 import testutils 1.0
+import "qrc:/qml"
+//import "qrc:/qml/js/TestUtils.js" as TestUtils
 
 
 Rectangle {

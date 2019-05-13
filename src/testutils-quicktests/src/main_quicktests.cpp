@@ -43,7 +43,6 @@ int main(int argc, char *argv[]) {
 
     qmlRegisterSingletonType<ImageLoader>("testutils", 1, 0, "ImageLoader", &ImageLoader::qmlInstance);
     qmlRegisterInterface<QmlImage>("QmlImage");
-    qmlRegisterType( QUrl("qrc:/qml/CustomTestCase.qml"), "testutils", 1, 0, "CustomTestCase");
 
     return quick_test_main(argc, argv, "qmltests", QUICK_TEST_SOURCE_DIR);
 }
