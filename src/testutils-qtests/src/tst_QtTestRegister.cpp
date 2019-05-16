@@ -42,7 +42,7 @@ private slots:
 };
 
 
-class TestQTestRegister: public QObject {
+class TestQtTestRegister: public QObject {
     Q_OBJECT
 
 private slots:
@@ -216,6 +216,6 @@ private slots:
 };
 
 
-QTEST_MAIN(TestQTestRegister)
+QTEST_MAIN(TestQtTestRegister)
 QTEST_MAIN(TestTestsRegistry)
-#include "tst_QTestRegister.moc"
+#include "tst_QtTestRegister.moc"
