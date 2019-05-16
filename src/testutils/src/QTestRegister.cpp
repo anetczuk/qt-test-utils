@@ -51,10 +51,7 @@ namespace testutils {
 
     int run_registered_tests(int argc, char *argv[]) {
         TestsRegistry& testsRegistry = get_tests_registry();
-        QStringList arguments;
-        for(int i=0; i<argc; ++i) {
-            arguments.append( argv[i] );
-        }
+        QStringList arguments = convertArgs(argc, argv);
         return testsRegistry.run_tests(arguments);
     }
 

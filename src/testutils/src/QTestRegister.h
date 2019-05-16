@@ -87,6 +87,60 @@ namespace testutils {
 
     void print_summary(const int cppStatus, const int qmlStatus);
 
+    inline QStringList convertArgs(int argc, char *argv[]) {
+        QStringList arguments;
+        for(int i=0; i<argc; ++i) {
+            arguments.append( argv[i] );
+        }
+        return arguments;
+    }
+
+
+    class Args {
+
+        std::vector<char*> vec;
+
+
+    public:
+
+        Args(const int argc, char** argv): vec() {
+            for(int i=0; i<argc; ++i) {
+                const char* str = argv[i];
+                const std::size_t strLen = strlen(str);
+                char* target = new char[ strLen+1 ];
+                strcpy(target, str);
+                target[strLen] = 0;
+                vec.push_back( target );
+            }
+        }
+
+        Args(const QStringList& args): vec() {
+            for(int i=0; i<args.size(); ++i) {
+                const std::string& str = args[i].toStdString();
+                const std::size_t strLen = str.length();
+                char* target = new char[ strLen+1 ];
+                str.copy(target, strLen);
+                target[strLen] = 0;
+                vec.push_back( target );
+            }
+        }
+
+        ~Args() {
+            for(std::size_t i=0; i<vec.size(); ++i) {
+                delete[] vec[i];
+                vec.clear();
+            }
+        }
+
+        int argc() const {
+            return vec.size();
+        }
+
+        char** argv() {
+            return &(vec[0]);
+        }
+
+    };
 
     // ======================================================
 
