@@ -21,8 +21,8 @@
 /// SOFTWARE.
 ///
 
-#ifndef SRC_ALIB_SRC_QTESTREGISTER_H_
-#define SRC_ALIB_SRC_QTESTREGISTER_H_
+#ifndef SRC_ALIB_SRC_QTTESTREGISTER_H_
+#define SRC_ALIB_SRC_QTTESTREGISTER_H_
 
 #include <QApplication>
 #include <QtTest/QtTest>
@@ -211,4 +211,4 @@ namespace testutils {
 }
 
 
-#endif /* SRC_ALIB_SRC_QTESTREGISTER_H_ */
+#endif /* SRC_ALIB_SRC_QTTESTREGISTER_H_ */

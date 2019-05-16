@@ -21,7 +21,7 @@
 /// SOFTWARE.
 ///
 
-#include "QTestRegister.h"
+#include "QtTestRegister.h"
 
 
 class DummyTestCase: public QObject {

@@ -21,7 +21,7 @@
 /// SOFTWARE.
 ///
 
-#include "QTestRegister.h"
+#include "QtTestRegister.h"
 
 
 QTEST_RUN_TESTS()

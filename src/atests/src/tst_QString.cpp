@@ -2,8 +2,7 @@
 /// File taken from Qt examples
 ///
 
-#include "QTestRegister.h"
-#include <QtTest/QtTest>
+#include "QtTestRegister.h"
 
 
 class TestQString: public QObject
