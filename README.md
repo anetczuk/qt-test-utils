@@ -2,18 +2,21 @@
 Extensions to Qt testing framework
 
 ### Features:
-- run all test cases in one executable (usefull e.g. in case of one tests subproject QtCreator)
+- run all QtTest tests cases in one executable (usefull e.g. in case of one tests subproject in QtCreator)
 - switch to old behaviour if needed (define EXEC_PER_TESTCASE)
-- calling tests by name supports wildcard(*)
+- calling QtTest and QtQuickTest tests by name supports wildcard(*)
 
 
 ### Use:
-For every source file with tests:
+Import *testutils* subproject to projects tree (subdirs template).
+
+For every source file with QtTest tests:
 1. write standard Qt test case file
 2. include *QTestRegister.h*
 
 Only once:
-- create "main" source file and call *QTEST_RUN_TESTS()* macro from *QTestRegister.h*
+- for QtTest: create "main" source file and call *QTEST_RUN_TESTS()* macro from *QtTestRegister.h*
+- for QtQuickTest: create "main" source and call *quicktestutils::run_tests()* runner from *QuickTestRegister.h*
 
 
 ### Macros:
