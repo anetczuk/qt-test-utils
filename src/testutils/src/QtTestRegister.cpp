@@ -24,6 +24,8 @@
 #include "QtTestRegister.h"
 #include <iostream>
 
+#include "FunctionParam.h"
+
 
 namespace testutils {
 
@@ -57,13 +59,6 @@ namespace testutils {
 
     QStringList find_methods(const QObject* testCase, const QString& function) {
         return find_methods(testCase, "", function);
-    }
-
-    QRegularExpression prepare_regex(const QString& namePattern) {
-        QString pattern = namePattern;
-        pattern.replace("*", ".*");
-        QRegularExpression re( pattern );
-        return re;
     }
 
     QStringList find_methods(const QObject* testCase, const QString& className, const QString& functionName) {
@@ -185,62 +180,6 @@ namespace testutils {
     // ======================================================
 
 
-    struct FunctionParam {
-        enum Valid {
-            V_None,
-            V_Func,
-            V_Class,
-            V_Both
-        };
-
-        Valid state;
-        QString className;
-        QString funcName;
-
-        FunctionParam(): state(V_None), className(""), funcName("") {
-        }
-
-        static FunctionParam createFromClass(const QString& className) {
-            FunctionParam ret;
-            ret.className = className;
-            ret.state = V_Class;
-            return ret;
-        }
-        static FunctionParam createFromFunction(const QString& funcName) {
-            FunctionParam ret;
-            ret.funcName = funcName;
-            ret.state = V_Func;
-            return ret;
-        }
-        static FunctionParam createFromBoth(const QString& className, const QString& funcName) {
-            FunctionParam ret;
-            ret.className = className;
-            ret.funcName = funcName;
-            ret.state = V_Both;
-            return ret;
-        }
-    };
-
-
-    std::vector<FunctionParam> split_functions(const QStringList& functionsList) {
-        std::vector<FunctionParam> ret;
-        ret.reserve( (std::size_t)functionsList.size() );
-        for(const QString& item: functionsList) {
-            //commonArgs.removeAll(item);
-            QStringList parts = item.split("::");
-            if (parts.size() == 1) {
-                // no class given
-                FunctionParam param = FunctionParam::createFromFunction( parts[0] );
-                ret.push_back( param );
-            } else if (parts.size() == 2) {
-                // with class
-                FunctionParam param = FunctionParam::createFromBoth( parts[0], parts[1] );
-                ret.push_back( param );
-            }
-        }
-        return ret;
-    }
-
     QStringList find_methods(const QObject* testCase, const std::vector<FunctionParam>& functionsParams) {
         QStringList retList;
         for(const FunctionParam& item: functionsParams) {
@@ -288,6 +227,11 @@ namespace testutils {
         }
         if (arguments.contains("-functions")) {
             // print functions
+
+            // example of "-functions" output:
+            //   test_function001()
+            //   test_function002()
+
             showSummaryMode = false;
             for (std::size_t i = 0; i<registrySize; ++i) {
                 QObject* testCase = get(i);
@@ -316,7 +260,7 @@ namespace testutils {
             commonArgs.removeAll(item);
         }
 
-        const std::vector<FunctionParam> class_function = split_functions(functions);
+        const std::vector<FunctionParam> class_function = FunctionParam::splitFunctionsForQTest(functions);
 
         int status = 0;
         for (std::size_t i = 0; i<registrySize; ++i) {

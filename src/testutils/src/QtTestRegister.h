@@ -69,6 +69,13 @@
 
 namespace testutils {
 
+    inline QRegularExpression prepare_regex(const QString& namePattern) {
+        QString pattern = namePattern;
+        pattern.replace("*", ".*");
+        QRegularExpression re( pattern );
+        return re;
+    }
+
     void register_test_case(QObject* testCase);
 
     int run_registered_tests(int argc, char *argv[]);
