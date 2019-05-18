@@ -9,6 +9,17 @@ function listProperties(item) {
     }
 }
 
+function listChildren(item) {
+    console.log("Children of object:", item);
+    var children = item.children;
+    var props = Object.keys(children);
+    for( var i in props) {
+        var p = props[i];
+        var val = children[p];
+        console.log("  [" + i + "]", p + ": " + val);
+    }
+}
+
 function getRoot( item ) {
     var obj = item;
     while( obj ) {

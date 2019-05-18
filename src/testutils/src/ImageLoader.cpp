@@ -146,7 +146,7 @@ QObject *ImageLoader::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine) {
 
     static ImageLoader* instance = nullptr;
     if (instance == nullptr) {
-        qDebug() << "creating ImageLoader singleton";
+        //qDebug() << "creating ImageLoader singleton";
         instance = new ImageLoader();
     }
     return instance;
