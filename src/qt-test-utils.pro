@@ -36,3 +36,6 @@ testutils-quicktests.depends = testutils
 
 tests.subdir = atests
 tests.depends = library testutils
+
+
+OTHER_FILES += $$files(../*.*, false)

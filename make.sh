@@ -34,6 +34,13 @@ if [ $rebuild -ne 0 ]; then
 fi
 
 
+if [ ! -e $RELEASE_DIR ]; then
+    $SCRIPT_DIR/configure.sh
+fi
+if [ ! -e $DEBUG_DIR ]; then
+    $SCRIPT_DIR/configure.sh
+fi
+
 cd $RELEASE_DIR
 make $@
 
