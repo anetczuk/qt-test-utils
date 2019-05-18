@@ -19,6 +19,11 @@ Only once:
 - for QtQuickTest: create "main" source and call *quicktestutils::run_tests()* runner from *QuickTestRegister.h*
 
 
+### Examples:
+- *testutils-qttests* - example subproject containing QtTest tests
+- *testutils-quicktests* - example subproject containing QtQuickTest tests
+
+
 ### Macros:
 - *QTEST_REGISTER()* -- register test case for tests runner
 - *QTEST_MAIN()* -- redefined standard macro to call *QTEST_REGISTER()*
