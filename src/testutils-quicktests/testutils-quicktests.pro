@@ -22,7 +22,7 @@
 ##
 
 TEMPLATE = app
-TARGET = testutilstests
+TARGET = testutilsquicktests
 
 QT += qml quick widgets testlib
 
