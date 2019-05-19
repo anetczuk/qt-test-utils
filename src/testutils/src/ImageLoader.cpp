@@ -26,16 +26,18 @@
 #include <QPainter>
 
 
-static QImage::Format format = QImage::Format_RGB32;
+static QImage::Format DIFF_IMG_FORMAT = QImage::Format_RGB32;
+
+static const int CHESS_GRID_SIZE = 10;
+static const int DIFF_IMAGES_SPACING = CHESS_GRID_SIZE * 2;
 
 
 QImage generateChessboard(const int width, const int height) {
-    QImage chess(width, height, format);
-    chess.fill( "black" );
+    QImage chess(width, height, DIFF_IMG_FORMAT);
+    chess.fill( "#666666" );
     QPainter painter(&chess);
-    static const int minGrid = 10;
     const int imgMinGrid = std::min( width / 3, height / 3 );
-    const int gridSize = (imgMinGrid < minGrid) ? 2 : minGrid;
+    const int gridSize = (imgMinGrid < CHESS_GRID_SIZE) ? 2 : CHESS_GRID_SIZE;
     const int wSteps = width / gridSize;
     const int hSteps = height / gridSize;
     for (int wo=0; wo<=wSteps; wo++) {
@@ -55,7 +57,7 @@ QImage generateChessboard(const int width, const int height) {
 
 QImage ImageLoader::makeDiff(const QImage& imgA, const QImage& imgB) {
     if(imgA.isNull() && imgB.isNull()) {
-        QImage emptyDiff(2, 1, format);
+        QImage emptyDiff(2, 1, DIFF_IMG_FORMAT);
         emptyDiff.setPixelColor(0, 0, "black");
         emptyDiff.setPixelColor(1, 0, "black");
         return emptyDiff;
@@ -69,7 +71,7 @@ QImage ImageLoader::makeDiff(const QImage& imgA, const QImage& imgB) {
     const int widthMax = std::max(widthA, widthB);
     const int heightMax = std::max(heightA, heightB);
 
-    QImage diff(widthMax, heightMax, format);
+    QImage diff(widthMax, heightMax, DIFF_IMG_FORMAT);
     diff.fill( Qt::transparent );
     {
         QPainter painter(&diff);
@@ -78,7 +80,7 @@ QImage ImageLoader::makeDiff(const QImage& imgA, const QImage& imgB) {
         painter.drawImage(0, 0, imgB);
     }
 
-    QImage threshold(widthMax, heightMax, format);
+    QImage threshold(widthMax, heightMax, DIFF_IMG_FORMAT);
     threshold.fill( Qt::transparent );
     for (int wo=0; wo<widthMax; wo++) {
         for (int ho=0; ho<heightMax; ho++) {
@@ -91,24 +93,27 @@ QImage ImageLoader::makeDiff(const QImage& imgA, const QImage& imgB) {
         }
     }
 
-    QImage join(widthMax*2, heightMax*2, format);
-    join.fill( Qt::transparent );
+    //QImage join(widthMax*2 + DIFF_IMAGES_SPACING, heightMax*2 + DIFF_IMAGES_SPACING, DIFF_IMG_FORMAT);
+    //join.fill( Qt::transparent );
+    QImage join = generateChessboard(widthMax*2 + DIFF_IMAGES_SPACING, heightMax*2 + DIFF_IMAGES_SPACING);
     {
         QPainter painter(&join);
-        if (imgA.isNull()) {
-            const QImage chess = generateChessboard(widthMax, heightMax);
-            painter.drawImage(0, 0, chess);
-        } else {
+        if (imgA.isNull() == false) {
             painter.drawImage(0, 0, imgA);
         }
-        if (imgB.isNull()) {
-            const QImage chess = generateChessboard(widthMax, heightMax);
-            painter.drawImage(widthMax, 0, chess);
-        } else {
-            painter.drawImage(widthMax, 0, imgB);
+//        else {
+//            const QImage chess = generateChessboard(widthMax, heightMax);
+//            painter.drawImage(0, 0, chess);
+//        }
+        if (imgB.isNull() == false) {
+            painter.drawImage(widthMax + DIFF_IMAGES_SPACING, 0, imgB);
         }
-        painter.drawImage(0, heightMax, threshold);
-        painter.drawImage(widthMax, heightMax, diff);
+//        else {
+//            const QImage chess = generateChessboard(widthMax, heightMax);
+//            painter.drawImage(widthMax, 0, chess);
+//        }
+        painter.drawImage(0, heightMax + DIFF_IMAGES_SPACING, threshold);
+        painter.drawImage(widthMax + DIFF_IMAGES_SPACING, heightMax + DIFF_IMAGES_SPACING, diff);
     }
 
     return join;
