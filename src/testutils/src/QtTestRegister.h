@@ -90,10 +90,6 @@ namespace testutils {
 
     QStringList extract_functions_from_arguments(const QStringList& arguments);
 
-    bool should_show_summary();
-
-    void print_summary(const int cppStatus, const int qmlStatus);
-
     inline QStringList convertArgs(int argc, char *argv[]) {
         QStringList arguments;
         for(int i=0; i<argc; ++i) {

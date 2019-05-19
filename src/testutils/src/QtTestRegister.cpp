@@ -54,7 +54,15 @@ namespace testutils {
     int run_registered_tests(int argc, char *argv[]) {
         TestsRegistry& testsRegistry = get_tests_registry();
         QStringList arguments = convertArgs(argc, argv);
-        return testsRegistry.run_tests(arguments);
+        const int numFailedTests = testsRegistry.run_tests(arguments);
+        if (testsRegistry.should_show_summary() == false) {
+            return numFailedTests;
+        }
+        std::cout << std::endl;
+        std::cout << "********* Summary *********" << std::endl;
+        std::cout << "      tests failures: " << numFailedTests << std::endl;
+        std::cout << "********* Finished summary *********" << std::endl;
+        return numFailedTests;
     }
 
     QStringList find_methods(const QObject* testCase, const QString& function) {
@@ -157,23 +165,6 @@ namespace testutils {
         }
 
         return functions;
-    }
-
-    bool should_show_summary() {
-        TestsRegistry& testsRegistry = get_tests_registry();
-        return testsRegistry.should_show_summary();
-    }
-
-    void print_summary(const int cppStatus, const int qmlStatus) {
-        if (should_show_summary() == false) {
-            return ;
-        }
-        std::cout << std::endl;
-        std::cout << "********* Summary *********" << std::endl;
-        std::cout << "     cpp failures: " << cppStatus << std::endl;
-        std::cout << "     qml failures: " << qmlStatus << std::endl;
-        std::cout << "   total failures: " << (cppStatus+qmlStatus) << std::endl;
-        std::cout << "********* Finished summary *********" << std::endl;
     }
 
 
