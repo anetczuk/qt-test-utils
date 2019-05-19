@@ -65,13 +65,15 @@ void QmlImage::save(const QString& filePath) const {
     if (image.isNull()) {
         QString message = QStringLiteral("Can't save to %1: empty image").arg(filePath);
         const std::string msg = message.toStdString();
-        qFatal( "%s", msg.c_str() );
+        //qFatal( "%s", msg.c_str() );
+        qCritical( "%s", msg.c_str() );
     }
     QImageWriter writer(filePath);
     if (!writer.write(image)) {
         QString message = QStringLiteral("Can't save to %1: %2").arg(filePath, writer.errorString());
         const std::string msg = message.toStdString();
-        qFatal( "%s", msg.c_str() );
+        //qFatal( "%s", msg.c_str() );
+        qCritical( "%s", msg.c_str() );
     }
 }
 
