@@ -40,6 +40,8 @@ namespace testutils {
     static const std::set<std::string> ONE_PARAM_ARGS = {"-o", "-eventdelay", "-keydelay", "-mousedelay", "-maxwarnings",
                                                          "-perfcounter", "-minimumvalue", "-minimumtotal", "-iterations", "-median"};
 
+    static const std::set<std::string> NO_SUMMARY_OPTIONS = {"-csv", "-xml", "-xunitxml", "-lightxml", "-teamcity"};
+
 
     TestsRegistry& get_tests_registry() {
         static TestsRegistry testsRegistry;
@@ -207,15 +209,24 @@ namespace testutils {
     TestsRegistry::TestsRegistry(): casesList(), showSummaryMode(true) {
     }
 
+    bool showSummary(const QStringList& arguments) {
+        for( const auto& item: arguments) {
+            const auto pos_iter = NO_SUMMARY_OPTIONS.find( item.toStdString() );
+            if (pos_iter != NO_SUMMARY_OPTIONS.end()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     int TestsRegistry::run_tests(const QStringList& arguments) {
         const std::size_t registrySize = size();
         if (registrySize < 1) {
             qWarning() << "no registered tests found";
         }
 
-        if (arguments.contains("-xml")) {
-            showSummaryMode = false;
-        }
+        showSummaryMode = showSummary(arguments);
+
         if (arguments.contains("-functions")) {
             // print functions
 
