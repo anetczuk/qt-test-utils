@@ -2,11 +2,10 @@
 Extensions to Qt testing framework
 
 ### Features:
-- run all QtTest tests cases in one executable (usefull e.g. in case of one tests subproject in QtCreator)
-- switch to old behaviour if needed (define EXEC_PER_TESTCASE)
-- calling QtTest and QtQuickTest tests by name supports wildcard(*)
-- Qml: saving and loading images from file
-- Qml: comparing images and generating diff image
+- running all QtTest tests cases in one executable (usefull e.g. in case of one tests subproject in QtCreator)
+- calling QtTest and QtQuickTest tests by name using wildcard(*)
+- loading/saving images from/to file directly from Qml
+- comparing images and visualising difference between them
 
 
 ### Example of generated diff image
@@ -45,3 +44,4 @@ Only once:
 
 ### Other things:
 - *common.pri* contains example of function definition for qmake -- *linkStaticLibrary()* -- function demonstrates how to link static libraries
+- qmake function *generateResFile* from *common.pri* demonstrates how to dynamically generate resource file
