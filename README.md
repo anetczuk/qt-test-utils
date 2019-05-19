@@ -5,6 +5,19 @@ Extensions to Qt testing framework
 - run all QtTest tests cases in one executable (usefull e.g. in case of one tests subproject in QtCreator)
 - switch to old behaviour if needed (define EXEC_PER_TESTCASE)
 - calling QtTest and QtQuickTest tests by name supports wildcard(*)
+- Qml: saving and loading images from file
+- Qml: comparing images and generating diff image
+
+
+### Example of generated diff image
+
+![Diff image](doc/diff_example.png "Diff image")
+
+Example presents difference of two images. Result consists of four *subimages*:
+- on upper left corner: test image
+- upper right corner: reference image
+- lower right corner: difference between two images
+- lower left corner: mask of differences
 
 
 ### Use:
