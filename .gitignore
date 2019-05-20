@@ -2,4 +2,5 @@
 /build-*
 /tmp
 *.pro.user
+*.pro.user.*
 *.qmlc
