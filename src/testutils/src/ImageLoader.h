@@ -43,42 +43,17 @@ class ImageLoader: public QObject
 public:
 
     // instance needed for unit tests
-    ImageLoader(): QObject() {
+    ImageLoader(QObject* parent = nullptr): QObject(parent) {
     }
 
     virtual ~ImageLoader() {
     }
 
-    Q_INVOKABLE QmlImage* loadImage(const QString& path) {
-        QmlImage* obj = new QmlImage(this);
-        obj->load(path);
-        return obj;
-    }
+    Q_INVOKABLE QmlImage* loadImage(const QString& path);
 
-    Q_INVOKABLE QmlImage* saveImageOfItem(QQuickItem *item, const QString& path) {
-        QmlImage* img = grabImage(item);
-        if (img == nullptr)
-            return nullptr;
-        img->save( path );
-        return img;
-    }
+    Q_INVOKABLE QmlImage* saveImageOfItem(QQuickItem *item, const QString& path);
 
-    Q_INVOKABLE QmlImage* grabImage(QQuickItem *item) {
-        if (item == nullptr) {
-            qDebug() << "unable to grab image from null item";
-            return nullptr;
-        }
-        if (item->window() == nullptr) {
-            qDebug() << "unable to grab image from item with no shwon window";
-            return nullptr;
-        }
-        QQuickWindow *window = item->window();
-        QImage grabbed = window->grabWindow();
-        QRectF rf(item->x(), item->y(), item->width(), item->height());
-        rf = rf.intersected(QRectF(0, 0, grabbed.width(), grabbed.height()));
-        QImage img = grabbed.copy(rf.toAlignedRect());
-        return new QmlImage(img, this);
-    }
+    Q_INVOKABLE QmlImage* grabImage(QQuickItem *item);
 
     QmlImage* makeDiff(const QmlImage& imgA, const QmlImage& imgB);
 

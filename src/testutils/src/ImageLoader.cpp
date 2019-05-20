@@ -32,6 +32,37 @@ static const int CHESS_GRID_SIZE = 10;
 static const int DIFF_IMAGES_SPACING = CHESS_GRID_SIZE * 2;
 
 
+QmlImage* ImageLoader::loadImage(const QString& path) {
+    QmlImage* obj = new QmlImage(this);
+    obj->load(path);
+    return obj;
+}
+
+QmlImage* ImageLoader::saveImageOfItem(QQuickItem *item, const QString& path) {
+    QmlImage* img = grabImage(item);
+    if (img == nullptr)
+        return nullptr;
+    img->save( path );
+    return img;
+}
+
+QmlImage* ImageLoader::grabImage(QQuickItem *item) {
+    if (item == nullptr) {
+        qDebug() << "unable to grab image from null item";
+        return nullptr;
+    }
+    if (item->window() == nullptr) {
+        qDebug() << "unable to grab image from item with no shwon window";
+        return nullptr;
+    }
+    QQuickWindow *window = item->window();
+    QImage grabbed = window->grabWindow();
+    QRectF rf(item->x(), item->y(), item->width(), item->height());
+    rf = rf.intersected(QRectF(0, 0, grabbed.width(), grabbed.height()));
+    QImage img = grabbed.copy(rf.toAlignedRect());
+    return new QmlImage(img, this);
+}
+
 QImage generateChessboard(const int width, const int height) {
     QImage chess(width, height, DIFF_IMG_FORMAT);
     chess.fill( "#666666" );
@@ -149,10 +180,5 @@ QObject *ImageLoader::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine) {
     Q_UNUSED(engine);
     Q_UNUSED(scriptEngine);
 
-    static ImageLoader* instance = nullptr;
-    if (instance == nullptr) {
-        //qDebug() << "creating ImageLoader singleton";
-        instance = new ImageLoader();
-    }
-    return instance;
+    return new ImageLoader(engine);
 }

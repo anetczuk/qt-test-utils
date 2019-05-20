@@ -31,6 +31,17 @@ class TestImageLoader: public QObject {
 
 private slots:
 
+    void test_qmlInstance() {
+        QObject* obj1 = ImageLoader::qmlInstance(nullptr, nullptr);
+        QVERIFY( obj1 != nullptr );
+        obj1->setParent( this );
+        QObject* obj2 = ImageLoader::qmlInstance(nullptr, nullptr);
+        QVERIFY( obj2 != nullptr );
+        obj2->setParent( this );
+
+        QVERIFY( obj1 != obj2 );
+    }
+
     void test_makeDiff_null() {
         const QmlImage image("data/blue.png");
         QVERIFY( image.empty() == false );
