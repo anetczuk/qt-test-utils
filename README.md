@@ -45,3 +45,7 @@ Only once:
 ### Other things:
 - *common.pri* contains example of function definition for qmake -- *linkStaticLibrary()* -- function demonstrates how to link static libraries
 - qmake function *generateResFile* from *common.pri* demonstrates how to dynamically generate resource file
+
+
+### Known bugs:
+- under Qt 5.9.5 calling Quick tests by test function name causes tests application to crash
