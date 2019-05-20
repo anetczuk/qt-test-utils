@@ -105,6 +105,7 @@ namespace testutils {
                 // internal Qt member
                 continue;
             }
+            // qDebug() << "executing pattern against value:" << functionName << mName;
             QRegularExpressionMatch match = functionRE.match( mName );
             if (match.hasMatch()) {
                 retList.append( mName );

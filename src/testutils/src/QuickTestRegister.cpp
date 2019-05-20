@@ -40,7 +40,7 @@ namespace quicktestutils {
         const int methodsNum = testCaseFunctions.size();
         for(int i=0; i<methodsNum; ++i) {
             const QString& testCase = testCaseFunctions[i];
-            // qDebug() << "executing pattern against value:" << pattern << testCase;
+            //qDebug() << "executing pattern against value:" << pattern << testCase;
             QRegularExpressionMatch match = caseRE.match( testCase );
             if (match.hasMatch()) {
                 retList.append( testCase );
@@ -119,23 +119,23 @@ namespace quicktestutils {
     int run_tests(int argc, char *argv[], const char *sourceDir) {
         const QStringList arguments = convertArgs( argc, argv );
 
-        if (arguments.contains("-functions")) {
-            // print functions
-            return execute_tests(arguments, sourceDir);
-        }
-
         const QStringList runFunctions = extract_functions_from_arguments(arguments);
         if ( runFunctions.empty() ) {
             // execute all tests
             return execute_tests(arguments, sourceDir);
         }
 
-        const QStringList testCaseFunctions = get_functions( arguments );
-
         QStringList commonArgs = arguments;
         for(const QString& item: runFunctions) {
             commonArgs.removeAll(item);
         }
+
+        if (arguments.contains("-functions")) {
+            // print functions
+            return execute_tests(commonArgs, sourceDir);
+        }
+
+        const QStringList testCaseFunctions = get_functions( commonArgs );
 
         const std::vector<FunctionParam> class_function = FunctionParam::splitFunctionsForQuickTest(runFunctions);
         const QStringList foundMethods = find_methods( testCaseFunctions, class_function );
