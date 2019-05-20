@@ -66,7 +66,7 @@ namespace testutils {
         static FunctionParam createFromClass(const QString& className) {
             FunctionParam ret;
             ret.className = className;
-            ret.state = V_Class;
+            ret.state = V_Both;
             return ret;
         }
         static FunctionParam createFromFunction(const QString& funcName) {

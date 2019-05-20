@@ -45,16 +45,46 @@ private slots:
         QVERIFY2( methodIndex >= 0, "current test case method should be in return list of test functions" );
     }
 
-    void test_find_methods_wildcard() {
+    void test_find_methods_class_wildcard() {
         QStringList testCases;
-        testCases.push_back("TestA:aabbcc001");
-        testCases.push_back("TestA:aabbcc002");
-        testCases.push_back("TestB:aabbcc");
-        const QStringList mNames = quicktestutils::find_methods(testCases, "T*A");
+        testCases.push_back("TestA::aabbcc001");
+        testCases.push_back("TestA::aabbcc002");
+        testCases.push_back("TestB::aabbcc");
+        const QStringList mNames = quicktestutils::find_methods(testCases, "T*A*");
 
         QCOMPARE(mNames.size(), 2);
-        QCOMPARE(mNames[0], QString("TestA:aabbcc001"));
-        QCOMPARE(mNames[1], QString("TestA:aabbcc002"));
+        QCOMPARE(mNames[0], QString("TestA::aabbcc001"));
+        QCOMPARE(mNames[1], QString("TestA::aabbcc002"));
+    }
+
+    void test_find_methods_class_exact() {
+        QStringList testCases;
+        testCases.push_back("TestA::aabbcc001");
+        testCases.push_back("TestA::aabbcc002");
+        testCases.push_back("TestB::aabbcc");
+        const QStringList mNames = quicktestutils::find_methods(testCases, "TestA");
+
+        QCOMPARE(mNames.size(), 0);
+    }
+
+    void test_find_methods_class_partial() {
+        QStringList testCases;
+        testCases.push_back("TestA::aabbcc001");
+        testCases.push_back("TestA::aabbcc002");
+        testCases.push_back("TestB::aabbcc");
+        const QStringList mNames = quicktestutils::find_methods(testCases, "Test");
+
+        QCOMPARE(mNames.size(), 0);
+    }
+
+    void test_find_methods_function_partial() {
+        QStringList testCases;
+        testCases.push_back("TestA::aabbcc001");
+        testCases.push_back("TestA::aabbcc002");
+        testCases.push_back("TestB::aabbcc");
+        const QStringList mNames = quicktestutils::find_methods(testCases, "aabb");
+
+        QCOMPARE(mNames.size(), 0);
     }
 
 };

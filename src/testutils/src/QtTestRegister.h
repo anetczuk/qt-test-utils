@@ -70,7 +70,7 @@
 namespace testutils {
 
     inline QRegularExpression prepare_regex(const QString& namePattern) {
-        QString pattern = namePattern;
+        QString pattern = "^" + namePattern + "$";
         pattern.replace("*", ".*");
         QRegularExpression re( pattern );
         return re;

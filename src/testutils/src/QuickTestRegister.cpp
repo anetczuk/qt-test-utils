@@ -43,6 +43,7 @@ namespace quicktestutils {
             //qDebug() << "executing pattern against value:" << pattern << testCase;
             QRegularExpressionMatch match = caseRE.match( testCase );
             if (match.hasMatch()) {
+                //qDebug() << "found matching:" << pattern << testCase;
                 retList.append( testCase );
             }
         }
@@ -141,7 +142,6 @@ namespace quicktestutils {
         const QStringList foundMethods = find_methods( testCaseFunctions, class_function );
         if (foundMethods.size() < 1) {
             // test case does not have searching functions
-            qDebug() << "no test cases found";
             return 0;
         }
 

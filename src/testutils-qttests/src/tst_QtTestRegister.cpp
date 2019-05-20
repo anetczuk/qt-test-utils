@@ -55,6 +55,13 @@ private slots:
         QCOMPARE(mNames[0], QString("function001"));
     }
 
+    void test_find_methods_partial() {
+        DummyTestCase object;
+        const QStringList mNames = testutils::find_methods(&object, "func");
+
+        QCOMPARE(mNames.size(), 0);
+    }
+
     void test_find_methods_wildcard() {
         DummyTestCase object;
         const QStringList mNames = testutils::find_methods(&object, "function*");

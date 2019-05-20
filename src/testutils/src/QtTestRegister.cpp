@@ -265,6 +265,7 @@ namespace testutils {
 
         const std::vector<FunctionParam> class_function = FunctionParam::splitFunctionsForQTest(functions);
 
+        bool foundCases = false;
         int status = 0;
         for (std::size_t i = 0; i<registrySize; ++i) {
             QObject* testCase = get(i);
@@ -273,9 +274,13 @@ namespace testutils {
                 // test case does not have searching functions
                 continue;
             }
+            foundCases = true;
             QStringList testArgs = commonArgs;
             testArgs.append( foundMethods );
             status += execute_test_case(testCase, testArgs);
+        }
+        if (foundCases == false) {
+            showSummaryMode = false;
         }
         return std::min(status, 127);
     }
