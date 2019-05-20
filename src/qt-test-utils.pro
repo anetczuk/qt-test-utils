@@ -23,19 +23,12 @@
 
 TEMPLATE = subdirs
 
-SUBDIRS = library aapp testutils testutils-qttests testutils-quicktests tests
+SUBDIRS = testutils testutils-qttests testutils-quicktests
 
-
-library.subdir = alib
-
-aapp.depends = library
 
 testutils-qttests.depends = testutils
 
 testutils-quicktests.depends = testutils
-
-tests.subdir = atests
-tests.depends = library testutils
 
 
 OTHER_FILES += $$files(../*.*, false)
