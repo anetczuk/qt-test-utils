@@ -64,7 +64,9 @@ private slots:
         testCases.push_back("TestB::aabbcc");
         const QStringList mNames = quicktestutils::find_methods(testCases, "TestA");
 
-        QCOMPARE(mNames.size(), 0);
+        QCOMPARE(mNames.size(), 2);
+        QCOMPARE(mNames[0], QString("TestA::aabbcc001"));
+        QCOMPARE(mNames[1], QString("TestA::aabbcc002"));
     }
 
     void test_find_methods_class_partial() {

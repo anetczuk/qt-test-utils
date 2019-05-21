@@ -45,6 +45,10 @@ namespace testutils {
         FunctionParam(): state(V_None), className(""), funcName("") {
         }
 
+        bool isValid() const {
+            return (state != V_None);
+        }
+
         QString getPattern() const {
             switch(state) {
             case V_None:
@@ -66,7 +70,7 @@ namespace testutils {
         static FunctionParam createFromClass(const QString& className) {
             FunctionParam ret;
             ret.className = className;
-            ret.state = V_Both;
+            ret.state = V_Class;
             return ret;
         }
         static FunctionParam createFromFunction(const QString& funcName) {
@@ -102,21 +106,25 @@ namespace testutils {
             return ret;
         }
 
+        static FunctionParam splitForQuickTest(const QString& function) {
+            QStringList parts = function.split("::");
+            if (parts.size() == 1) {
+                // no function given
+                return createFromClass( parts[0] );
+            } else if (parts.size() == 2) {
+                // with class and method
+                return createFromBoth( parts[0], parts[1] );
+            }
+            return FunctionParam();
+        }
+
         static std::vector<FunctionParam> splitFunctionsForQuickTest(const QStringList& functionsList) {
             std::vector<FunctionParam> ret;
             ret.reserve( (std::size_t)functionsList.size() );
             for(const QString& item: functionsList) {
-                //commonArgs.removeAll(item);
-                QStringList parts = item.split("::");
-                if (parts.size() == 1) {
-                    // no function given
-                    FunctionParam param = FunctionParam::createFromClass( parts[0] );
-                    ret.push_back( param );
-                } else if (parts.size() == 2) {
-                    // with class and method
-                    FunctionParam param = FunctionParam::createFromBoth( parts[0], parts[1] );
-                    ret.push_back( param );
-                }
+                FunctionParam func = splitForQuickTest(item);
+                if (func.isValid())
+                    ret.push_back( func );
             }
             return ret;
         }

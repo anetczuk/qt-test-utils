@@ -31,7 +31,9 @@ namespace quicktestutils {
 
     QStringList get_functions(const QStringList& args);
 
-    QStringList find_methods(const QStringList& testCaseFunctions, const QString& pattern);
+    QStringList find_methods(const QStringList& testCaseFunctions, const QString& runFunction);
+
+    QStringList find_methods(const QStringList& testCaseFunctions, const QStringList& functionPatterns);
 
     int run_tests(int argc, char *argv[], const char *sourceDir);
 

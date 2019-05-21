@@ -33,7 +33,9 @@ using namespace testutils;
 
 namespace quicktestutils {
 
-    QStringList find_methods(const QStringList& testCaseFunctions, const QString& pattern) {
+    QStringList find_methods(const QStringList& testCaseFunctions, const QString& runFunction) {
+        const FunctionParam class_function = FunctionParam::splitForQuickTest( runFunction );
+        const QString pattern = class_function.getPattern();
         QRegularExpression caseRE = prepare_regex( pattern );
 
         QStringList retList;
@@ -47,20 +49,28 @@ namespace quicktestutils {
                 retList.append( testCase );
             }
         }
+
+        // remove duplicates
+        QSet<QString> stringSet = retList.toSet();
+        retList = stringSet.toList();
+        retList.sort();
+
         return retList;
     }
 
-    QStringList find_methods(const QStringList& testCaseFunctions, const std::vector<FunctionParam>& functionsParams) {
+    QStringList find_methods(const QStringList& testCaseFunctions, const QStringList& functionPatterns) {
         QStringList retList;
-        for(const FunctionParam& item: functionsParams) {
-            const QString pattern = item.getPattern();
-            const QStringList names = find_methods(testCaseFunctions, pattern);
-            retList.append( names );
+        const int patternNum = functionPatterns.size();
+        for(int i=0; i<patternNum; ++i) {
+            const QString& runFunction = functionPatterns[i];
+            QStringList list = find_methods(testCaseFunctions, runFunction);
+            retList.append( list );
         }
 
         // remove duplicates
         QSet<QString> stringSet = retList.toSet();
         retList = stringSet.toList();
+        retList.sort();
 
         return retList;
     }
@@ -138,8 +148,7 @@ namespace quicktestutils {
 
         const QStringList testCaseFunctions = get_functions( commonArgs );
 
-        const std::vector<FunctionParam> class_function = FunctionParam::splitFunctionsForQuickTest(runFunctions);
-        const QStringList foundMethods = find_methods( testCaseFunctions, class_function );
+        const QStringList foundMethods = find_methods( testCaseFunctions, runFunctions );
         if (foundMethods.size() < 1) {
             // test case does not have searching functions
             return 0;
