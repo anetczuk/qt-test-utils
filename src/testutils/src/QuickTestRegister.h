@@ -27,6 +27,11 @@
 #include <QtQuickTest/quicktest.h>
 
 
+// redefine macro to empty one
+#undef QUICK_TEST_MAIN
+#define QUICK_TEST_MAIN( name )
+
+
 namespace quicktestutils {
 
     QStringList get_functions(const QStringList& args);

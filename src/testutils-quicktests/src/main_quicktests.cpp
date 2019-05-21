@@ -26,6 +26,9 @@
 #include "ImageLoader.h"
 
 
+QUICK_TEST_MAIN(qmltests)          // redefined empty macro to inform QtCrator to detect test cases
+
+
 QT_BEGIN_NAMESPACE
 QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS
 QT_END_NAMESPACE
