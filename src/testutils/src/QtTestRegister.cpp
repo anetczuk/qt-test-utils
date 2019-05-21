@@ -55,7 +55,18 @@ namespace testutils {
 
     int run_registered_tests(int argc, char *argv[]) {
         TestsRegistry& testsRegistry = get_tests_registry();
-        QStringList arguments = convertArgs(argc, argv);
+        const QStringList arguments = convertArgs(argc, argv);
+
+//        qDebug() << "arguments:" << arguments;
+//        QFile ff("/tmp/aaa.log");
+//        ff.open( QFile::Append );
+//        for( auto& item: arguments) {
+//            ff.write( item.toStdString().c_str() );
+//            ff.write(" ");
+//        }
+//        ff.write("\n");
+//        ff.close();
+
         const int numFailedTests = testsRegistry.run_tests(arguments);
         if (testsRegistry.should_show_summary() == false) {
             return numFailedTests;
