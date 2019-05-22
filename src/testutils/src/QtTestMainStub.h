@@ -21,30 +21,23 @@
 /// SOFTWARE.
 ///
 
-#include "QuickTestRegister.h"
-#include "QtTestMainStub.h"
-
-#include "ImageLoader.h"
+#ifndef SRC_ALIB_SRC_QUICKTESTMAINSTUB_H_
+#define SRC_ALIB_SRC_QUICKTESTMAINSTUB_H_
 
 
-QUICK_TEST_MAIN(qmltests)          // redefined empty macro to inform QtCrator to detect test cases
+// redefine macro to empty one
+#ifdef QUICK_TEST_MAIN
+    #undef QUICK_TEST_MAIN
+#endif
+
+#define QUICK_TEST_MAIN( name )
 
 
-QT_BEGIN_NAMESPACE
-QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS
-QT_END_NAMESPACE
+#ifdef QTEST_MAIN
+    #undef QTEST_MAIN
+#endif
 
-int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
+#define QTEST_MAIN( name )
 
-    QTEST_DISABLE_KEYPAD_NAVIGATION
-    QTEST_ADD_GPU_BLACKLIST_SUPPORT
-    QTEST_SET_MAIN_SOURCE_PATH
 
-    Q_INIT_RESOURCE(testutilsres);
-
-    qmlRegisterSingletonType<ImageLoader>("testutils", 1, 0, "ImageLoader", &ImageLoader::qmlInstance);
-    qmlRegisterInterface<QmlImage>("QmlImage");
-
-    return quicktestutils::run_tests( argc, argv, QUICK_TEST_SOURCE_DIR );
-}
+#endif /* SRC_ALIB_SRC_QUICKTESTMAINSTUB_H_ */

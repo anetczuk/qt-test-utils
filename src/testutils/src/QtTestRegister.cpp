@@ -48,11 +48,6 @@ namespace testutils {
         return testsRegistry;
     }
 
-    void register_test_case(QObject* testCase) {
-        TestsRegistry& testsRegistry = get_tests_registry();
-        testsRegistry.push_back(testCase);
-    }
-
     int run_registered_tests(int argc, char *argv[]) {
         TestsRegistry& testsRegistry = get_tests_registry();
         const QStringList arguments = convertArgs(argc, argv);
@@ -72,7 +67,7 @@ namespace testutils {
             return numFailedTests;
         }
         std::cout << std::endl;
-        std::cout << "********* Summary *********" << std::endl;
+        std::cout << "********* Tests summary *********" << std::endl;
         std::cout << "      tests failures: " << numFailedTests << std::endl;
         std::cout << "********* Finished summary *********" << std::endl;
         return numFailedTests;
@@ -218,7 +213,7 @@ namespace testutils {
         return retList;
     }
 
-    TestsRegistry::TestsRegistry(): casesList(), showSummaryMode(true) {
+    TestsRegistry::TestsRegistry(): ObjectRegistry<QObject>(), showSummaryMode(true) {
     }
 
     bool showSummary(const QStringList& arguments) {
@@ -296,7 +291,13 @@ namespace testutils {
         return std::min(status, 127);
     }
 
-    int TestsRegistry::execute_test_case(QObject* testCase, const QStringList& arguments) {
+    TestsRegistry::RegisterInvocation::RegisterInvocation(): testCase( new Type() ) {
+        TestsRegistry& testsRegistry = get_tests_registry();
+        Type* ptr = testCase.data();
+        testsRegistry.push_back(ptr);
+    }
+
+    int TestsRegistry::execute_test_case(Type* testCase, const QStringList& arguments) {
         return QTest::qExec(testCase, arguments);
     }
 

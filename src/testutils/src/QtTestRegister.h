@@ -26,14 +26,17 @@
 
 #include <QApplication>
 #include <QtTest/QtTest>
-#include <QSharedPointer>
+
+#include "ConcatMacro.h"
+#include "ObjectRegistry.h"
 
 
 #ifndef EXEC_PER_TESTCASE
 
     // new behaviour -- run all tests in one executable
 
-    #define QTEST_REGISTER( test_class )    static testutils::RegisterTestCaseInvocation<test_class> PPCAT(TEST_CASE, __LINE__);
+
+    #define QTEST_REGISTER( test_class )    static testutils::TestsRegistry::RegisterInvocation PPCAT(TEST_CASE, __LINE__);
 
 
     #define QTEST_RUN_TESTS()                                                                   \
@@ -63,11 +66,9 @@
 #endif
 
 
-#define PPCAT(A, B) PPCAT_NX(A, B)
-#define PPCAT_NX(A, B) A ## B
-
-
 namespace testutils {
+
+    int run_registered_tests(int argc, char *argv[]);
 
     inline QRegularExpression prepare_regex(const QString& namePattern) {
         QString pattern = "^" + namePattern + "$";
@@ -75,10 +76,6 @@ namespace testutils {
         QRegularExpression re( pattern );
         return re;
     }
-
-    void register_test_case(QObject* testCase);
-
-    int run_registered_tests(int argc, char *argv[]);
 
     QStringList find_methods(const QObject* testCase, const QString& function);
 
@@ -136,7 +133,7 @@ namespace testutils {
         }
 
         int argc() const {
-            return vec.size();
+            return (int)vec.size();
         }
 
         char** argv() {
@@ -145,25 +142,12 @@ namespace testutils {
 
     };
 
+
     // ======================================================
 
 
-    template <class TC>
-    class RegisterTestCaseInvocation {
-        QSharedPointer<TC> testCase;
+    class TestsRegistry: public ObjectRegistry<QObject> {
 
-    public:
-
-        RegisterTestCaseInvocation(): testCase( new TC() ) {
-            register_test_case( testCase.data() );
-        }
-
-    };
-
-
-    class TestsRegistry {
-
-        std::vector<QObject*> casesList;
         bool showSummaryMode;
 
 
@@ -174,40 +158,23 @@ namespace testutils {
         virtual ~TestsRegistry() {
         }
 
-        const QObject* operator [](const std::size_t index) const {
-            return casesList[index];
-        }
-
-        QObject* operator [](const std::size_t index) {
-            return casesList[index];
-        }
-
-        std::size_t size() const {
-            return casesList.size();
-        }
-
         bool should_show_summary() const {
             return showSummaryMode;
-        }
-
-        const QObject* get(const std::size_t index) const {
-            return casesList[index];
-        }
-
-        QObject* get(const std::size_t index) {
-            return casesList[index];
-        }
-
-        void push_back(QObject* testCase) {
-            casesList.push_back(testCase);
         }
 
         int run_tests(const QStringList& arguments);
 
 
+        class RegisterInvocation {
+            QSharedPointer<Type> testCase;
+        public:
+            RegisterInvocation();
+        };
+
+
     protected:
 
-        virtual int execute_test_case(QObject* testCase, const QStringList& arguments);
+        virtual int execute_test_case(Type* testCase, const QStringList& arguments);
 
     };
 
