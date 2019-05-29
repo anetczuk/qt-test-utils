@@ -21,6 +21,8 @@
 /// SOFTWARE.
 ///
 
+#include "QtTest.h"
+
 #include "QtTestRegister.h"
 
 
@@ -111,34 +113,25 @@ private slots:
         QCOMPARE(mNames[1], QString("function002"));
     }
 
-    void test_extract_functions_from_arguments() {
-        QStringList arguments = {"bin_path", "-v1", "test_aaa001", "-median", "30", "-xxx", "test_aaa002"};
-        const QStringList functions = testutils::extract_functions_from_arguments(arguments);
-
-        QCOMPARE(functions.size(), 2);
-        QCOMPARE(functions[0], QString("test_aaa001"));
-        QCOMPARE(functions[1], QString("test_aaa002"));
-    }
-
 };
 
 
 // =======================================================
 
 
-class TestsRegistryMock: public testutils::TestsRegistry {
+class QtTestsRegistryMock: public testutils::QtTestsRegistry {
 public:
 
-    TestsRegistryMock(): TestsRegistry() {
+    QtTestsRegistryMock(): QtTestsRegistry() {
     }
 
-    virtual ~TestsRegistryMock() {
+    virtual ~QtTestsRegistryMock() {
     }
 
 
 protected:
 
-    virtual int execute_test_case(QObject* /*testCase*/, const QStringList& /*arguments*/) override {
+    virtual int execute_test_case(QObject* /*testCase*/, const testutils::CmdParser& /*arguments*/) override {
         //qDebug() << "arguments:" << arguments;
         return 1;
     }
@@ -146,13 +139,13 @@ protected:
 };
 
 
-class TestTestsRegistry: public QObject {
+class TestQtTestsRegistry: public QObject {
     Q_OBJECT
 
 private slots:
 
     void test_run_tests_single() {
-        TestsRegistryMock registry;
+        QtTestsRegistryMock registry;
         DummyTestCase object;
         registry.push_back( &object );
         QStringList arguments = {"binary_path"};
@@ -162,7 +155,7 @@ private slots:
     }
 
     void test_run_tests_multi() {
-        TestsRegistryMock registry;
+        QtTestsRegistryMock registry;
         DummyTestCase object001;
         registry.push_back( &object001 );
         DummyTestCase object002;
@@ -174,7 +167,7 @@ private slots:
     }
 
     void test_run_tests_filtered() {
-        TestsRegistryMock registry;
+        QtTestsRegistryMock registry;
         QObject object001;
         registry.push_back( &object001 );
         DummyTestCase object002;
@@ -186,7 +179,7 @@ private slots:
     }
 
     void test_run_tests_filtered_with_class() {
-        TestsRegistryMock registry;
+        QtTestsRegistryMock registry;
         QObject object001;
         registry.push_back( &object001 );
         DummyTestCase object002;
@@ -198,7 +191,7 @@ private slots:
     }
 
     void test_run_tests_filtered_class() {
-        TestsRegistryMock registry;
+        QtTestsRegistryMock registry;
         QObject object001;
         registry.push_back( &object001 );
         DummyTestCase object002;
@@ -210,7 +203,7 @@ private slots:
     }
 
     void test_run_tests_list_functions() {
-        TestsRegistryMock registry;
+        QtTestsRegistryMock registry;
         QObject object001;
         registry.push_back( &object001 );
         DummyTestCase object002;
@@ -224,5 +217,5 @@ private slots:
 
 
 QTEST_MAIN(TestQtTestRegister)
-QTEST_MAIN(TestTestsRegistry)
+QTEST_MAIN(TestQtTestsRegistry)
 #include "tst_QtTestRegister.moc"

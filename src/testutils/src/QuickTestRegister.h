@@ -24,23 +24,83 @@
 #ifndef SRC_ALIB_SRC_QUICKTESTREGISTER_H_
 #define SRC_ALIB_SRC_QUICKTESTREGISTER_H_
 
-#include <QtQuickTest/quicktest.h>
+#include <QStringList>
+#include <QSharedPointer>
 
-
-// redefine macro to empty one
-#undef QUICK_TEST_MAIN
-#define QUICK_TEST_MAIN( name )
+#include "ObjectRegistry.h"
 
 
 namespace quicktestutils {
 
-    QStringList get_functions(const QStringList& args);
+    class QmlSingleTestUnit {
+    protected:
 
-    QStringList find_methods(const QStringList& testCaseFunctions, const QString& runFunction);
+        std::string unit;       // path
+        QObject* setupObj;
 
-    QStringList find_methods(const QStringList& testCaseFunctions, const QStringList& functionPatterns);
 
-    int run_tests(int argc, char *argv[], const char *sourceDir);
+    public:
+
+        QmlSingleTestUnit(const std::string& unitPath): unit(unitPath), setupObj(nullptr) {
+        }
+
+        QmlSingleTestUnit(const std::string& rootPath, const std::string& subPath): unit(rootPath), setupObj(nullptr) {
+            unit.append(subPath);
+        }
+
+        virtual ~QmlSingleTestUnit() {
+        }
+
+        const std::string& unitId() const {
+            return unit;
+        }
+
+        void attachSetupObject(QObject& setup) {
+            setupObj = &setup;
+        }
+
+        void attachSetupObject(QObject* setup) {
+            setupObj = setup;
+        }
+
+        virtual int run(const QStringList& arguments) {
+            return executeUnit(arguments);
+        }
+
+        int executeUnit(const QStringList& arguments);
+
+    };
+
+
+    // ======================================================
+
+
+    class QuickTestsRegistry: public testutils::ObjectRegistry<QmlSingleTestUnit> {
+    public:
+
+        QuickTestsRegistry();
+
+        virtual ~QuickTestsRegistry() {
+        }
+
+        static QuickTestsRegistry& get_tests_registry();
+
+    };
+
+
+    template <class ObjType>
+    class RegisterTestUnit {
+        QSharedPointer<ObjType> testCase;
+
+    public:
+
+        RegisterTestUnit(): testCase( new ObjType() ) {
+            QuickTestsRegistry& testsRegistry = QuickTestsRegistry::get_tests_registry();
+            ObjType* ptr = testCase.data();
+            testsRegistry.push_back(ptr);
+        }
+
+    };
 
 }
 

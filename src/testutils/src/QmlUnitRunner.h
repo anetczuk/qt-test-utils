@@ -20,22 +20,47 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
+#ifndef SRC_ALIB_SRC_QMLUNITRUNNER_H_
+#define SRC_ALIB_SRC_QMLUNITRUNNER_H_
 
-#include "QtTest.h"
+#include "CmdParser.h"
 
 
-QTEST_RUN_TESTS()
+namespace quicktestutils {
 
-//QT_BEGIN_NAMESPACE
-//QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS
-//QT_END_NAMESPACE
+    QStringList get_functions(const QStringList& args);
 
-//int main(int argc, char *argv[]) {
-//    QApplication app(argc, argv);
+    QStringList find_methods(const QStringList& testCaseFunctions, const QString& runFunction);
 
-//    QTEST_DISABLE_KEYPAD_NAVIGATION
-//    QTEST_ADD_GPU_BLACKLIST_SUPPORT
-//    QTEST_SET_MAIN_SOURCE_PATH
+    QStringList find_methods(const QStringList& testCaseFunctions, const QStringList& functionPatterns);
 
-//    return testutils::run_registered_tests(argc, argv);
-//}
+
+    // ====================================================================
+
+
+    class QmlUnitRunner {
+    public:
+
+        QmlUnitRunner() {
+        }
+
+        virtual ~QmlUnitRunner() {
+        }
+
+        int run(const QStringList& arguments, const char *sourceDir = nullptr, QObject* setup = nullptr);
+
+        int run(const testutils::CmdParser& arguments, const char *sourceDir = nullptr, QObject* setup = nullptr);
+
+
+    protected:
+
+        virtual int executeQml(const testutils::CmdParser& arguments, const char *sourceDir, QObject* setup);
+
+        virtual QStringList getFunctionsList(const testutils::CmdParser& arguments) const;
+
+    };
+
+}
+
+
+#endif /* SRC_ALIB_SRC_QMLUNITRUNNER_H_ */

@@ -21,21 +21,19 @@
 /// SOFTWARE.
 ///
 
-#include "QtTest.h"
+#ifndef SRC_ALIB_SRC_QUICKTEST_H_
+#define SRC_ALIB_SRC_QUICKTEST_H_
+
+#include "QuickTestRegister.h"
+#include "ConcatMacro.h"
 
 
-QTEST_RUN_TESTS()
+#define QUICK_TEST_REGISTER( test_class )    static quicktestutils::RegisterTestUnit<test_class> PPCAT(TEST_CASE, __LINE__);
 
-//QT_BEGIN_NAMESPACE
-//QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS
-//QT_END_NAMESPACE
 
-//int main(int argc, char *argv[]) {
-//    QApplication app(argc, argv);
+// redefine standard macro to keep compatibile with old code
+#undef QTEST_MAIN
+#define QTEST_MAIN( test_class )        QUICK_TEST_REGISTER( test_class )
 
-//    QTEST_DISABLE_KEYPAD_NAVIGATION
-//    QTEST_ADD_GPU_BLACKLIST_SUPPORT
-//    QTEST_SET_MAIN_SOURCE_PATH
 
-//    return testutils::run_registered_tests(argc, argv);
-//}
+#endif /* SRC_ALIB_SRC_QUICKTEST_H_ */

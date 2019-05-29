@@ -21,32 +21,54 @@
 /// SOFTWARE.
 ///
 
-#include "QuickTestRegister.h"
-#include "QmlUnitRunner.h"
+#ifndef SRC_ALIB_SRC_QUICKTESTRUNNER_H_
+#define SRC_ALIB_SRC_QUICKTESTRUNNER_H_
 
-
-using namespace testutils;
+#include "CmdParser.h"
 
 
 namespace quicktestutils {
 
-    int QmlSingleTestUnit::executeUnit(const QStringList& arguments) {
-        QStringList params( arguments );
-        params.push_back( "-input" );
-        params.push_back( unit.c_str() );
+    class QuickTestsRegistry;
 
-        QmlUnitRunner runner;
-        return runner.run(params, nullptr, setupObj);
-    }
 
-    QuickTestsRegistry::QuickTestsRegistry(): ObjectRegistry<QmlSingleTestUnit>() {
-    }
+    int run_tests(int argc, char *argv[], const char *sourceDir);
 
-    QuickTestsRegistry& QuickTestsRegistry::get_tests_registry() {
-        static QuickTestsRegistry testsRegistry;
-        return testsRegistry;
-    }
+    int run_tests(const QStringList& arguments, const char *sourceDir);
+
+
+    // =================================================================
+
+
+    class QuickTestsRunner {
+    public:
+
+        QuickTestsRunner() {
+        }
+
+        virtual ~QuickTestsRunner() {
+        }
+
+        int run_tests(const QStringList& arguments, const char *sourceDir = nullptr);
+
+        int run_tests(const testutils::CmdParser& arguments, const char *sourceDir = nullptr);
+
+
+    protected:
+
+        virtual int spawn_qml_tests(const testutils::CmdParser& arguments);
+
+        virtual int execute_qml_tests(const testutils::CmdParser& arguments, const char *sourceDir);
+
+        virtual int spawn_registered_tests(const testutils::CmdParser& arguments, const std::string& unit);
+
+        virtual int execute_registered_tests(const testutils::CmdParser& arguments);
+
+        virtual QuickTestsRegistry& getTestsRegistry();
+
+    };
 
 }
 
-//#include "QuickTestRegister.moc"
+
+#endif /* SRC_ALIB_SRC_QUICKTESTRUNNER_H_ */

@@ -21,21 +21,27 @@
 /// SOFTWARE.
 ///
 
-#include "QtTest.h"
+#ifndef TEST_UTILS_H_
+#define TEST_UTILS_H_
+
+#include <QRegularExpression>
+#include <QProcess>
 
 
-QTEST_RUN_TESTS()
+namespace testutils {
 
-//QT_BEGIN_NAMESPACE
-//QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS
-//QT_END_NAMESPACE
+    inline QRegularExpression prepare_regex(const QString& namePattern) {
+        QString pattern = "^" + namePattern + "$";
+        pattern.replace("*", ".*");
+        QRegularExpression re( pattern );
+        return re;
+    }
 
-//int main(int argc, char *argv[]) {
-//    QApplication app(argc, argv);
+    int executeProcess(QProcess& process, const QStringList& arguments, const bool failOnNonZeroExitCode = true);
 
-//    QTEST_DISABLE_KEYPAD_NAVIGATION
-//    QTEST_ADD_GPU_BLACKLIST_SUPPORT
-//    QTEST_SET_MAIN_SOURCE_PATH
+    int executeProcess(QProcess& process, const QString& program, const QStringList& arguments, const bool failOnNonZeroExitCode = true);
 
-//    return testutils::run_registered_tests(argc, argv);
-//}
+}
+
+
+#endif /* TEST_UTILS_H_ */

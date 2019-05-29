@@ -22,20 +22,36 @@
 ///
 
 #include "QtTest.h"
+#include <iostream>
+
+#include "Args.h"
 
 
-QTEST_RUN_TESTS()
+namespace testutils {
 
-//QT_BEGIN_NAMESPACE
-//QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS
-//QT_END_NAMESPACE
+    int run_registered_tests(int argc, char *argv[]) {
+        QtTestsRegistry& testsRegistry = QtTestsRegistry::get_tests_registry();
+        const QStringList arguments = convertArgs(argc, argv);
 
-//int main(int argc, char *argv[]) {
-//    QApplication app(argc, argv);
+//        qDebug() << "arguments:" << arguments;
+//        QFile ff("/tmp/aaa.log");
+//        ff.open( QFile::Append );
+//        for( auto& item: arguments) {
+//            ff.write( item.toStdString().c_str() );
+//            ff.write(" ");
+//        }
+//        ff.write("\n");
+//        ff.close();
 
-//    QTEST_DISABLE_KEYPAD_NAVIGATION
-//    QTEST_ADD_GPU_BLACKLIST_SUPPORT
-//    QTEST_SET_MAIN_SOURCE_PATH
+        const int numFailedTests = testsRegistry.run_tests(arguments);
+        if (testsRegistry.should_show_summary() == false) {
+            return numFailedTests;
+        }
+        std::cout << std::endl;
+        std::cout << "********* Tests summary *********" << std::endl;
+        std::cout << "      tests failures: " << numFailedTests << std::endl;
+        std::cout << "********* Finished summary *********" << std::endl;
+        return numFailedTests;
+    }
 
-//    return testutils::run_registered_tests(argc, argv);
-//}
+}

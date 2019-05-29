@@ -24,58 +24,13 @@
 #ifndef SRC_ALIB_SRC_QTTESTREGISTER_H_
 #define SRC_ALIB_SRC_QTTESTREGISTER_H_
 
-#include <QApplication>
-#include <QtTest/QtTest>
+#include <QRegularExpression>
 
-#include "ConcatMacro.h"
 #include "ObjectRegistry.h"
-
-
-#ifndef EXEC_PER_TESTCASE
-
-    // new behaviour -- run all tests in one executable
-
-
-    #define QTEST_REGISTER( test_class )    static testutils::TestsRegistry::RegisterInvocation PPCAT(TEST_CASE, __LINE__);
-
-
-    #define QTEST_RUN_TESTS()                                                                   \
-                                QT_BEGIN_NAMESPACE                                              \
-                                QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS                            \
-                                QT_END_NAMESPACE                                                \
-                                int main(int argc, char *argv[]) {                              \
-                                    QApplication app(argc, argv);                               \
-                                    QTEST_DISABLE_KEYPAD_NAVIGATION                             \
-                                    QTEST_ADD_GPU_BLACKLIST_SUPPORT                             \
-                                    QTEST_SET_MAIN_SOURCE_PATH                                  \
-                                    return testutils::run_registered_tests(argc, argv);         \
-                                }
-
-    // redefine standard macro to keep compatibile with old code
-    #undef QTEST_MAIN
-    #define QTEST_MAIN( test_class )        QTEST_REGISTER( test_class )
-
-#else
-
-    // old behaviour -- create executable per test case
-
-    #define QTEST_REGISTER( test_class )    QTEST_MAIN( test_class )
-
-    #define QTEST_RUN_TESTS()               // do nothing
-
-#endif
+#include "CmdParser.h"
 
 
 namespace testutils {
-
-    int run_registered_tests(int argc, char *argv[]);
-
-    inline QRegularExpression prepare_regex(const QString& namePattern) {
-        QString pattern = "^" + namePattern + "$";
-        pattern.replace("*", ".*");
-        QRegularExpression re( pattern );
-        return re;
-    }
 
     QStringList find_methods(const QObject* testCase, const QString& function);
 
@@ -85,77 +40,20 @@ namespace testutils {
 
     QStringList find_methods(const QObject* testCase, const QStringList& classes, const QStringList& functions);
 
-    QStringList extract_functions_from_arguments(const QStringList& arguments);
-
-    inline QStringList convertArgs(int argc, char *argv[]) {
-        QStringList arguments;
-        for(int i=0; i<argc; ++i) {
-            arguments.append( argv[i] );
-        }
-        return arguments;
-    }
-
-
-    class Args {
-
-        std::vector<char*> vec;
-
-
-    public:
-
-        Args(const int argc, char** argv): vec() {
-            for(int i=0; i<argc; ++i) {
-                const char* str = argv[i];
-                const std::size_t strLen = strlen(str);
-                char* target = new char[ strLen+1 ];
-                strcpy(target, str);
-                target[strLen] = 0;
-                vec.push_back( target );
-            }
-        }
-
-        Args(const QStringList& args): vec() {
-            for(int i=0; i<args.size(); ++i) {
-                const std::string& str = args[i].toStdString();
-                const std::size_t strLen = str.length();
-                char* target = new char[ strLen+1 ];
-                str.copy(target, strLen);
-                target[strLen] = 0;
-                vec.push_back( target );
-            }
-        }
-
-        ~Args() {
-            for(std::size_t i=0; i<vec.size(); ++i) {
-                delete[] vec[i];
-                vec.clear();
-            }
-        }
-
-        int argc() const {
-            return (int)vec.size();
-        }
-
-        char** argv() {
-            return &(vec[0]);
-        }
-
-    };
-
 
     // ======================================================
 
 
-    class TestsRegistry: public ObjectRegistry<QObject> {
+    class QtTestsRegistry: public ObjectRegistry<QObject> {
 
         bool showSummaryMode;
 
 
     public:
 
-        TestsRegistry();
+        QtTestsRegistry();
 
-        virtual ~TestsRegistry() {
+        virtual ~QtTestsRegistry() {
         }
 
         bool should_show_summary() const {
@@ -164,17 +62,29 @@ namespace testutils {
 
         int run_tests(const QStringList& arguments);
 
+        int run_tests(const testutils::CmdParser& arguments);
 
-        class RegisterInvocation {
-            QSharedPointer<Type> testCase;
-        public:
-            RegisterInvocation();
-        };
+        static QtTestsRegistry& get_tests_registry();
 
 
     protected:
 
-        virtual int execute_test_case(Type* testCase, const QStringList& arguments);
+        virtual int execute_test_case(Type* testCase, const testutils::CmdParser& arguments);
+
+    };
+
+
+    template <class ObjType>
+    class RegisterQtTest {
+        QSharedPointer<ObjType> testCase;
+
+    public:
+
+        RegisterQtTest(): testCase( new ObjType() ) {
+            QtTestsRegistry& testsRegistry = QtTestsRegistry::get_tests_registry();
+            ObjType* ptr = testCase.data();
+            testsRegistry.push_back(ptr);
+        }
 
     };
 

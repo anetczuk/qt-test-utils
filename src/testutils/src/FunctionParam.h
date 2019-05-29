@@ -95,8 +95,10 @@ namespace testutils {
                 QStringList parts = item.split("::");
                 if (parts.size() == 1) {
                     // no class given
-                    FunctionParam param = FunctionParam::createFromFunction( parts[0] );
-                    ret.push_back( param );
+                    FunctionParam classParam = FunctionParam::createFromClass( parts[0] );
+                    ret.push_back( classParam );
+                    FunctionParam funcParam = FunctionParam::createFromFunction( parts[0] );
+                    ret.push_back( funcParam );
                 } else if (parts.size() == 2) {
                     // with class and method
                     FunctionParam param = FunctionParam::createFromBoth( parts[0], parts[1] );

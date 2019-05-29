@@ -2,13 +2,13 @@
 #define TYPEREGISTRY_H
 
 #include <vector>
-#include <QSharedPointer>
 
 
 namespace testutils {
 
     template <class ObjType>
     class ObjectRegistry {
+    protected:
 
         std::vector<ObjType*> objectsList;
 

@@ -36,7 +36,7 @@ HEADERS += $$files(src/*.h, true)
 
 SOURCES += $$files(src/*.cpp, true)
 
-OTHER_FILES += $$files(qml/*.qml, true)
+OTHER_FILES += $$files(*.qml, true)
 OTHER_FILES += $$files(data/*.*, true)
 
 #QML_FILES = $$files(qml/*.qml, true)

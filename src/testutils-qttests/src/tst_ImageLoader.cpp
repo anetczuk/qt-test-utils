@@ -21,7 +21,7 @@
 /// SOFTWARE.
 ///
 
-#include "QtTestRegister.h"
+#include "QtTest.h"
 
 #include "ImageLoader.h"
 

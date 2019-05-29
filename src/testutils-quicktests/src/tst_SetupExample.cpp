@@ -21,21 +21,57 @@
 /// SOFTWARE.
 ///
 
-#include "QtTest.h"
+#include "QuickTest.h"
+#include <iostream>
+
+#include <QQmlEngine>
+#include <QQmlContext>
+#include <QDebug>
+
+#include "Args.h"
 
 
-QTEST_RUN_TESTS()
+using namespace quicktestutils;
 
-//QT_BEGIN_NAMESPACE
-//QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS
-//QT_END_NAMESPACE
 
-//int main(int argc, char *argv[]) {
-//    QApplication app(argc, argv);
+namespace {
 
-//    QTEST_DISABLE_KEYPAD_NAVIGATION
-//    QTEST_ADD_GPU_BLACKLIST_SUPPORT
-//    QTEST_SET_MAIN_SOURCE_PATH
+    class Setup: public QObject {
+        Q_OBJECT
 
-//    return testutils::run_registered_tests(argc, argv);
-//}
+
+    public slots:
+
+        void applicationAvailable() {
+            // application level initialization code
+        }
+
+        void qmlEngineAvailable(QQmlEngine* engine) {
+            QQmlContext *context = engine->rootContext();
+            context->setContextProperty("contextRectangleColor", "blue");
+        }
+
+        void cleanupTestCase() {
+            // cleanup code
+        }
+
+    };
+
+}
+
+
+class TestSetupExample: public QmlSingleTestUnit {
+public:
+
+    Setup setup;
+
+
+    TestSetupExample(): QmlSingleTestUnit(QUICK_TEST_SOURCE_DIR, "/src/tst_SetupExample.qml") {
+        attachSetupObject(setup);
+    }
+
+};
+
+
+QTEST_MAIN(TestSetupExample)
+#include "tst_SetupExample.moc"

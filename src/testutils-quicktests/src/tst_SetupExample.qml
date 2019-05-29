@@ -21,21 +21,62 @@
 /// SOFTWARE.
 ///
 
-#include "QtTest.h"
+import QtQuick 2.0
+import QtTest 1.2
+
+//import testutils 1.0
+import "qrc:/qml"
+//import "qrc:/qml/js/TestUtils.js" as TestUtils
 
 
-QTEST_RUN_TESTS()
+Rectangle {
+    id: root
 
-//QT_BEGIN_NAMESPACE
-//QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS
-//QT_END_NAMESPACE
+    color: "red"
+    width: 300
+    height: 300
 
-//int main(int argc, char *argv[]) {
-//    QApplication app(argc, argv);
 
-//    QTEST_DISABLE_KEYPAD_NAVIGATION
-//    QTEST_ADD_GPU_BLACKLIST_SUPPORT
-//    QTEST_SET_MAIN_SOURCE_PATH
+    Column {
 
-//    return testutils::run_registered_tests(argc, argv);
-//}
+        anchors.fill: parent
+        anchors.margins: 20
+
+
+        Rectangle {
+
+            color: contextRectangleColor
+            width: 100
+            height: 100
+
+            TestCase {
+                name: "SetupExampleProps"
+                when: windowShown
+
+                function test_width() {
+                    compare( parent.width, 100 );
+                }
+
+                function test_height() {
+                    compare( parent.height, 100 );
+                }
+                function test_contextColor() {
+                    compare( contextRectangleColor, "blue" );
+                    compare( parent.color, "#0000ff" );
+                }
+
+            }
+
+        }
+    }
+
+    CustomTestCase {
+        name: "SetupExampleScreen"
+        when: windowShown
+
+        function test_screen() {
+            var status = compareScreenshots();
+            compare( status, 0 );
+        }
+    }
+}

@@ -26,18 +26,18 @@
 
 
 // redefine macro to empty one
-#ifdef QUICK_TEST_MAIN
-    #undef QUICK_TEST_MAIN
-#endif
-
-#define QUICK_TEST_MAIN( name )
-
-
 #ifdef QTEST_MAIN
     #undef QTEST_MAIN
 #endif
 
 #define QTEST_MAIN( name )
+
+
+#ifdef QUICK_TEST_MAIN
+    #undef QUICK_TEST_MAIN
+#endif
+
+#define QUICK_TEST_MAIN( name )
 
 
 #endif /* SRC_ALIB_SRC_QUICKTESTMAINSTUB_H_ */

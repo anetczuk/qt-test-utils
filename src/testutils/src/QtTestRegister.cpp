@@ -22,56 +22,14 @@
 ///
 
 #include "QtTestRegister.h"
-#include <iostream>
 
 #include "FunctionParam.h"
+#include "TestUtils.h"
+
+#include <QtTest/QtTest>
 
 
 namespace testutils {
-
-    typedef std::vector<QObject*> TestCasesList;
-
-
-    static const std::set<std::string> NO_PARAMS_ARGS = {"-txt", "-cvs", "-xunitxml", "-lightxml", "-teamcity", "-silent",
-                                                         "-v1", "-v2", "-vs", "-functions", "-datatags",
-                                                         "-nocrashhandler", "-callgrind",
-                                                         "-perf", "-perfcounterlist", "-tickcounter", "-eventcounter", "-vb", "-help"};
-
-    static const std::set<std::string> ONE_PARAM_ARGS = {"-o", "-eventdelay", "-keydelay", "-mousedelay", "-maxwarnings",
-                                                         "-perfcounter", "-minimumvalue", "-minimumtotal", "-iterations", "-median"};
-
-    static const std::set<std::string> NO_SUMMARY_OPTIONS = {"-csv", "-xml", "-xunitxml", "-lightxml", "-teamcity"};
-
-
-    TestsRegistry& get_tests_registry() {
-        static TestsRegistry testsRegistry;
-        return testsRegistry;
-    }
-
-    int run_registered_tests(int argc, char *argv[]) {
-        TestsRegistry& testsRegistry = get_tests_registry();
-        const QStringList arguments = convertArgs(argc, argv);
-
-//        qDebug() << "arguments:" << arguments;
-//        QFile ff("/tmp/aaa.log");
-//        ff.open( QFile::Append );
-//        for( auto& item: arguments) {
-//            ff.write( item.toStdString().c_str() );
-//            ff.write(" ");
-//        }
-//        ff.write("\n");
-//        ff.close();
-
-        const int numFailedTests = testsRegistry.run_tests(arguments);
-        if (testsRegistry.should_show_summary() == false) {
-            return numFailedTests;
-        }
-        std::cout << std::endl;
-        std::cout << "********* Tests summary *********" << std::endl;
-        std::cout << "      tests failures: " << numFailedTests << std::endl;
-        std::cout << "********* Finished summary *********" << std::endl;
-        return numFailedTests;
-    }
 
     QStringList find_methods(const QObject* testCase, const QString& function) {
         return find_methods(testCase, "", function);
@@ -143,39 +101,6 @@ namespace testutils {
         return retList;
     }
 
-    QStringList extract_functions_from_arguments(const QStringList& arguments) {
-        QStringList functions;
-
-        const int aSize = arguments.size();
-        for(int i=1; i<aSize; ++i) {
-            const QString& arg = arguments[i];
-            const std::string& stdArg = arg.toStdString();
-            auto pos = NO_PARAMS_ARGS.find( stdArg );
-            if (pos != NO_PARAMS_ARGS.end()) {
-                /// known argument that does not have parameters
-                continue;
-            }
-            pos = ONE_PARAM_ARGS.find( stdArg );
-            if (pos != ONE_PARAM_ARGS.end()) {
-                /// known argument that does take one parameter
-                ++i;
-                continue;
-            }
-            if (stdArg.length() < 1) {
-                continue;
-            }
-            if (stdArg[0] == '-') {
-                /// unknown argument -- assume no params arg
-                continue;
-            }
-
-            /// unknown string -- assume function name
-            functions.append( stdArg.c_str() );
-        }
-
-        return functions;
-    }
-
 
     // ======================================================
 
@@ -192,9 +117,7 @@ namespace testutils {
                 break;
             }
             case FunctionParam::V_Func: {
-                const QStringList fNames = find_methods(testCase, "*", item.funcName);
-                retList.append( fNames );
-                const QStringList cNames = find_methods(testCase, item.funcName, "*");
+                const QStringList cNames = find_methods(testCase, "*", item.funcName);
                 retList.append( cNames );
                 break;
             }
@@ -213,26 +136,21 @@ namespace testutils {
         return retList;
     }
 
-    TestsRegistry::TestsRegistry(): ObjectRegistry<QObject>(), showSummaryMode(true) {
+    QtTestsRegistry::QtTestsRegistry(): ObjectRegistry<QObject>(), showSummaryMode(true) {
     }
 
-    bool showSummary(const QStringList& arguments) {
-        for( const auto& item: arguments) {
-            const auto pos_iter = NO_SUMMARY_OPTIONS.find( item.toStdString() );
-            if (pos_iter != NO_SUMMARY_OPTIONS.end()) {
-                return false;
-            }
-        }
-        return true;
+    int QtTestsRegistry::run_tests(const QStringList& arguments) {
+        testutils::CmdParser params( arguments );
+        return run_tests( params );
     }
 
-    int TestsRegistry::run_tests(const QStringList& arguments) {
+    int QtTestsRegistry::run_tests(const CmdParser& arguments) {
         const std::size_t registrySize = size();
         if (registrySize < 1) {
             qWarning() << "no registered tests found";
         }
 
-        showSummaryMode = showSummary(arguments);
+        showSummaryMode = arguments.shouldShowSummary();
 
         if (arguments.contains("-functions")) {
             // print functions
@@ -253,7 +171,7 @@ namespace testutils {
             return 0;
         }
 
-        const QStringList functions = extract_functions_from_arguments(arguments);
+        const QStringList functions = arguments.extractFunctions();
         if (functions.size()<1) {
             //run all tests
             int status = 0;
@@ -264,10 +182,8 @@ namespace testutils {
             return std::min(status, 127);
         }
 
-        QStringList commonArgs = arguments;
-        for(const QString& item: functions) {
-            commonArgs.removeAll(item);
-        }
+        CmdParser commonArgs( arguments );
+        commonArgs.removeAll(functions);
 
         const std::vector<FunctionParam> class_function = FunctionParam::splitFunctionsForQTest(functions);
 
@@ -281,7 +197,7 @@ namespace testutils {
                 continue;
             }
             foundCases = true;
-            QStringList testArgs = commonArgs;
+            CmdParser testArgs( commonArgs );
             testArgs.append( foundMethods );
             status += execute_test_case(testCase, testArgs);
         }
@@ -291,14 +207,14 @@ namespace testutils {
         return std::min(status, 127);
     }
 
-    TestsRegistry::RegisterInvocation::RegisterInvocation(): testCase( new Type() ) {
-        TestsRegistry& testsRegistry = get_tests_registry();
-        Type* ptr = testCase.data();
-        testsRegistry.push_back(ptr);
+    QtTestsRegistry& QtTestsRegistry::get_tests_registry() {
+        static QtTestsRegistry testsRegistry;
+        return testsRegistry;
     }
 
-    int TestsRegistry::execute_test_case(Type* testCase, const QStringList& arguments) {
-        return QTest::qExec(testCase, arguments);
+    int QtTestsRegistry::execute_test_case(Type* testCase, const CmdParser& arguments) {
+        const QStringList& params = arguments.list();
+        return QTest::qExec(testCase, params);
     }
 
 }
