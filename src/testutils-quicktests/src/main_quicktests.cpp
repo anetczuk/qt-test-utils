@@ -21,10 +21,15 @@
 /// SOFTWARE.
 ///
 
-#include <QApplication>
+#include <QtQuickTest/QtQuickTest>          // for QtCreator to detect test cases
+#include "QtTestMainStub.h"
+#include "QuickTest.h"
 
 #include "QuickTestRunner.h"
 #include "ImageLoader.h"
+
+
+QUICK_TEST_MAIN(quicktests);                // redefined empty macro to inform QtCrator to detect test cases
 
 
 //QT_BEGIN_NAMESPACE

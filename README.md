@@ -53,10 +53,19 @@ Only once:
 
 ## Appendix
 
-### Requirements for detecting QtTests by QtCreator (version 4.9.0)
+### Requirements for detecting QtTests cases by QtCreator (version 4.9.0)
 1. test case have to be implemented in source file (*.cpp)
 2. tests file have to be added to *SOURCES* variable in project "pro" file
-3. tests file have to include one of: <QtTest> or "QtTest.h" (Qt standard header can be replaced by custom one)
-4. test function have to be implemented as slot
-5. test class have to be registered using "QTEST_MAIN" macro (macro can be redefined)
-6. only one test class per file allowed (even in case of reimplementing the macro)
+3. tests project have to include *testlib* library (added to *QT* variable)
+4. tests file have to include one of: <QtTest> or "QtTest.h" (Qt standard header can be replaced by custom one)
+5. test function have to be implemented as slot
+6. test class have to be registered using *QTEST_MAIN* macro (macro can be redefined)
+7. only one test class per file allowed (even in case of reimplementing the macro)
+
+### Requirements for detecting QuickTests cases by QtCreator (version 4.9.0)
+1. test case have to be implemented in qml file prefixed with "tst_" (tst_*.qml)
+2. tests project have to include *qmltestcase* option (added to *CONFIG* variable in project "pro" file)
+3. tests file have to be placed in the same directory or one of subfolders of project file
+4. tests main file have to include one of: <QtQuickTest/QtQuickTest> or <QtQuickTest/quicktest.h>
+5. main file have to use *QUICK_TEST_MAIN* macro (macro can be redefined)
+6. only one test case component per file allowed 
