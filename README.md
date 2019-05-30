@@ -5,7 +5,7 @@ Extensions to Qt testing framework
 - running all QtTest tests cases in one executable (usefull e.g. in case of one tests subproject in QtCreator)
 - calling QtTest and QtQuickTest tests by name using wildcard(*)
 - loading/saving images from/to file directly from Qml
-- comparing images and visualising difference between them
+- comparing images and visualising difference between them from Qml
 
 
 ### Example of generated diff image
@@ -24,7 +24,7 @@ Import *testutils* subproject to projects tree (subdirs template).
 
 For every source file with QtTest tests:
 1. write standard Qt test case file
-2. include *QTestRegister.h*
+2. include *QTest.h* or *QuickTest.h*
 
 Only once:
 - for QtTest: create "main" source file and call *QTEST_RUN_TESTS()* macro from *QtTestRegister.h*
@@ -49,3 +49,14 @@ Only once:
 
 ### Known bugs:
 - under Qt 5.9.5 calling Quick tests by test function name causes tests application to crash
+
+
+## Appendix
+
+### Requirements for detecting QtTests by QtCreator (version 4.9.0)
+1. test case have to be implemented in source file (*.cpp)
+2. tests file have to be added to *SOURCES* variable in project "pro" file
+3. tests file have to include one of: <QtTest> or "QtTest.h" (Qt standard header can be replaced by custom one)
+4. test function have to be implemented as slot
+5. test class have to be registered using "QTEST_MAIN" macro (macro can be redefined)
+6. only one test class per file allowed (even in case of reimplementing the macro)

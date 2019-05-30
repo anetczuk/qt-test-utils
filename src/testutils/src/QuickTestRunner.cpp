@@ -30,6 +30,7 @@
 
 #include <iostream>
 #include <QProcess>
+#include <QFile>
 #include <QDebug>
 
 
@@ -44,6 +45,17 @@ namespace quicktestutils {
     }
 
     int run_tests(const QStringList& arguments, const char *sourceDir) {
+
+//        qDebug() << "arguments:" << arguments;
+//        QFile ff("/tmp/aaa2.log");
+//        ff.open( QFile::Append );
+//        for( auto& item: arguments) {
+//            ff.write( item.toStdString().c_str() );
+//            ff.write(" ");
+//        }
+//        ff.write("\n");
+//        ff.close();
+
         QuickTestsRunner runner;
         return runner.run_tests(arguments, sourceDir);
     }

@@ -24,13 +24,7 @@
 #include <QApplication>
 
 #include "QuickTestRunner.h"
-#include "QtTestMainStub.h"
 #include "ImageLoader.h"
-
-//#include <QtQuickTest/quicktest.h>
-
-
-QUICK_TEST_MAIN(qmltests)          // call redefined empty macro to inform QtCrator to detect test cases
 
 
 //QT_BEGIN_NAMESPACE

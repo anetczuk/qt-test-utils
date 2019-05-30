@@ -21,9 +21,11 @@
 /// SOFTWARE.
 ///
 
+#include "QtTest.h"
 #include "QuickTest.h"
 #include <iostream>
 
+#include <QApplication>
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QDebug>
@@ -60,14 +62,22 @@ namespace {
 }
 
 
-class TestSetupExample: public QmlSingleTestUnit {
+class TestSetupExample: public QObject, public QmlSingleTestUnit {
+    Q_OBJECT
+
 public:
 
     Setup setup;
 
 
-    TestSetupExample(): QmlSingleTestUnit(QUICK_TEST_SOURCE_DIR, "/src/tst_SetupExample.qml") {
+    TestSetupExample(): QmlSingleTestUnit(QUICK_TEST_SOURCE_DIR, "/src/tst_SetupExample.qml"), setup() {
         attachSetupObject(setup);
+    }
+
+
+private slots:
+
+    void run_tests() {
     }
 
 };
