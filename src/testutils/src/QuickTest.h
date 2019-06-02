@@ -25,15 +25,34 @@
 #define SRC_ALIB_SRC_QUICKTEST_H_
 
 #include "QuickTestRegister.h"
+#include "QuickTestRunner.h"
 #include "ConcatMacro.h"
 
 
 #define QUICK_TEST_REGISTER( test_class )    static quicktestutils::RegisterTestUnit<test_class> PPCAT(TEST_CASE, __LINE__);
 
 
-// redefine standard macro to keep compatibile with old code
-#undef QTEST_MAIN
-#define QTEST_MAIN( test_class )        QUICK_TEST_REGISTER( test_class )
+#ifndef EXEC_PER_TESTCASE
+
+    // redefine standard macro to keep compatibile with old code
+    #undef QTEST_MAIN
+    #define QTEST_MAIN( test_class )        QUICK_TEST_REGISTER( test_class )
+
+#else
+
+    #undef QTEST_MAIN
+    #define QTEST_MAIN( test_class )                                                                                                        \
+                                int main(int argc, char *argv[]) {                                                                          \
+                                    Q_INIT_RESOURCE(testutilsres);                                                                          \
+                                                                                                                                            \
+                                    std::string sourceDir( QUICK_TEST_SOURCE_DIR );                                                         \
+                                    sourceDir.append("/qml");                                                                               \
+                                                                                                                                            \
+                                    return quicktestutils::run_tests( argc, argv, sourceDir.c_str() );                                      \
+                                }
+
+
+#endif
 
 
 #endif /* SRC_ALIB_SRC_QUICKTEST_H_ */

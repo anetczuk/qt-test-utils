@@ -44,6 +44,26 @@ private slots:
 };
 
 
+class QtTestsRegistryMock: public testutils::QtTestsRegistry {
+public:
+
+    QtTestsRegistryMock(): QtTestsRegistry() {
+    }
+
+    virtual ~QtTestsRegistryMock() {
+    }
+
+
+protected:
+
+    virtual int execute_test_case(QObject* /*testCase*/, const testutils::CmdParser& /*arguments*/) override {
+        //qDebug() << "arguments:" << arguments;
+        return 1;
+    }
+
+};
+
+
 class TestQtTestRegister: public QObject {
     Q_OBJECT
 
@@ -113,36 +133,9 @@ private slots:
         QCOMPARE(mNames[1], QString("function002"));
     }
 
-};
 
+    // =======================================================
 
-// =======================================================
-
-
-class QtTestsRegistryMock: public testutils::QtTestsRegistry {
-public:
-
-    QtTestsRegistryMock(): QtTestsRegistry() {
-    }
-
-    virtual ~QtTestsRegistryMock() {
-    }
-
-
-protected:
-
-    virtual int execute_test_case(QObject* /*testCase*/, const testutils::CmdParser& /*arguments*/) override {
-        //qDebug() << "arguments:" << arguments;
-        return 1;
-    }
-
-};
-
-
-class TestQtTestsRegistry: public QObject {
-    Q_OBJECT
-
-private slots:
 
     void test_run_tests_single() {
         QtTestsRegistryMock registry;
@@ -217,5 +210,4 @@ private slots:
 
 
 QTEST_MAIN(TestQtTestRegister)
-QTEST_MAIN(TestQtTestsRegistry)
 #include "tst_QtTestRegister.moc"

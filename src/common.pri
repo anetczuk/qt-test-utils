@@ -34,13 +34,24 @@
 ## QtCreator's Profile mode is configured as Release
 
 
-PROJECT_FILE = $$basename(_PRO_FILE_)
-_PROJECT_FILE_PARTS_ = $$split(PROJECT_FILE, ".")
-PROJECT_NAME = $$first(_PROJECT_FILE_PARTS_)
+include( "config.pri" )
+
+include( "paths.pri" )
 
 
-SOURCE_ROOT_DIR = $$PWD
-BUILD_ROOT_DIR = $$OUT_PWD/..
+PROJECT_NAME = $$fileName($$_PRO_FILE_)
+
+SOURCE_ROOT_DIR = $$realPath( $$PWD )
+SOURCE_CURRENT_DIR = $$realPath( $$_PRO_FILE_PWD_ )
+BUILD_ROOT_DIR = $$shadowedRootPath()
+BUILD_CURRENT_DIR = $$realPath( $$OUT_PWD )
+
+
+#message("common SOURCE_ROOT_DIR:" $$SOURCE_ROOT_DIR)
+#message("common SOURCE_CURRENT_DIR:" $$SOURCE_CURRENT_DIR)
+#message("common BUILD_ROOT_DIR:" $$BUILD_ROOT_DIR)
+#message("common BUILD_CURRENT_DIR:" $$BUILD_CURRENT_DIR)
+
 
 BUILD_DIR = .
 #CONFIG(debug, debug|release) {
@@ -49,6 +60,15 @@ BUILD_DIR = .
 #CONFIG(release, debug|release) {
 #	BUILD_DIR = release
 #}
+
+
+include(codecoverage.pri)
+
+
+##
+## ===============================================================
+##
+
 
 
 # QMAKE_SUBSTITUTES
@@ -66,11 +86,11 @@ defineTest(linkStaticLibrary) {
 
     LIB_DIR = $$BUILD_ROOT_DIR/$$lib_build_dir/$$BUILD_DIR
     !exists( $$LIB_DIR ) {
-          message( "Static lib build dir not found:" $$LIB_DIR)
+          message( "Static lib build dir not found:" $$LIB_DIR )
     }
     LIB_FILE_NAME = $$staticLibName($$lib_target_name)
     LIB_PATH = $$LIB_DIR/$$LIB_FILE_NAME
-    message("lib path:" $$LIB_PATH )
+    #message("lib path:" $$LIB_PATH )
     !exists( $$LIB_PATH ) {
           message( "Static lib not found:" $$LIB_PATH)
     }

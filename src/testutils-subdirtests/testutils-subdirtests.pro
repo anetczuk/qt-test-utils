@@ -23,21 +23,22 @@
 
 TEMPLATE = subdirs
 
-SUBDIRS = testutils
+SUBDIRS =
 
 
-### normal test subprojects
-#SUBDIRS += testutils-qttests testutils-quicktests
+include(../common.pri)
 
-#testutils-qttests.depends = testutils
-
-#testutils-quicktests.depends = testutils
+include(prjgenerator.pri)
 
 
-## generated test subprojects
-SUBDIRS += testutils-subdirtests
-
-testutils-subdirtests.depends = testutils
+TEST_SOURCES += $$files($$SOURCE_ROOT_DIR/tst_*.cpp, true)
 
 
-OTHER_FILES += $$files(../*.*, false)
+OTHER_FILES += $$files(*.*, false)
+OTHER_FILES -= $$basename(_PRO_FILE_)
+
+
+GEN_LIST = $$generatePrjFromList( $$TEST_SOURCES )
+
+addFiles( $$GEN_LIST )
+#addFiles( $$BUILD_CURRENT_DIR"/*.pro" )

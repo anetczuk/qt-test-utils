@@ -21,23 +21,38 @@
 ## SOFTWARE.
 ##
 
-TEMPLATE = subdirs
 
-SUBDIRS = testutils
+defineReplace(fileName) {
+    path = $$1
+    base_name = $$basename(path)
+    base_name_parts = $$split(base_name, ".")
+    FILE_NAME = $$first(base_name_parts)
+    return ($$FILE_NAME)
+}
 
+!linux {
+    defineReplace(realPath) {
+        ## do nothing
+        return ($$1)
+    }
+    defineReplace(shadowedRootPath) {
+        path = $$shadowed($$SOURCE_ROOT_DIR )
+        return ($$path)
+    }
+} else {
+    defineReplace(realPath) {
+        path = $$system(realpath $$1)
+        return ($$path)
+    }
+    defineReplace(shadowedRootPath) {
+        ## "shadowed" function is broken under Linux -- it returns invalid result in case of symlinks
+        REAL_OUT_PWD = $$realPath( $$OUT_PWD )
+        REL_PATH = $$relative_path( $$REAL_OUT_PWD, $$SOURCE_ROOT_DIR)
+        DIRS_LIST = $$split(REL_PATH, /))
+        $$take_first( DIRS_LIST )
+        BUILD_ROOT_DIR = $$SOURCE_ROOT_DIR"/../"$$first(DIRS_LIST)
+        BUILD_ROOT_DIR = $$clean_path($$BUILD_ROOT_DIR)
+        return ($$BUILD_ROOT_DIR)
+    }
+}
 
-### normal test subprojects
-#SUBDIRS += testutils-qttests testutils-quicktests
-
-#testutils-qttests.depends = testutils
-
-#testutils-quicktests.depends = testutils
-
-
-## generated test subprojects
-SUBDIRS += testutils-subdirtests
-
-testutils-subdirtests.depends = testutils
-
-
-OTHER_FILES += $$files(../*.*, false)

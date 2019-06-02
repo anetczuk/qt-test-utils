@@ -21,23 +21,11 @@
 ## SOFTWARE.
 ##
 
-TEMPLATE = subdirs
 
-SUBDIRS = testutils
-
-
-### normal test subprojects
-#SUBDIRS += testutils-qttests testutils-quicktests
-
-#testutils-qttests.depends = testutils
-
-#testutils-quicktests.depends = testutils
+##
+## Common configuration for subprojects
+##
 
 
-## generated test subprojects
-SUBDIRS += testutils-subdirtests
+CONFIG += subdir_tests
 
-testutils-subdirtests.depends = testutils
-
-
-OTHER_FILES += $$files(../*.*, false)

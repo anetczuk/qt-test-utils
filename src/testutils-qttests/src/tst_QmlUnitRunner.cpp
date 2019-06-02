@@ -47,7 +47,7 @@ public:
 
 protected:
 
-    virtual int executeQml(const testutils::CmdParser& arguments, const char* /*sourceDir*/, QObject* setup) override {
+    virtual int executeQml(const testutils::CmdParser& arguments, const char* /*sourceDir*/, QObject* /*setup*/) override {
         execQmlCounter += 1;
         execQmlArgs = arguments.toQString();
         return 0;
