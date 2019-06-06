@@ -26,8 +26,31 @@ defineReplace(fileName) {
     path = $$1
     base_name = $$basename(path)
     base_name_parts = $$split(base_name, ".")
-    FILE_NAME = $$first(base_name_parts)
-    return ($$FILE_NAME)
+    RET = $$first(base_name_parts)
+    return ($$RET)
+}
+
+defineReplace(fileExtension) {
+    path = $$1
+    dir_name = $$basename(path)
+    dir_name_parts = $$split(dir_name, ".")
+    RET = $$last(dir_name_parts)
+    return ($$RET)
+}
+
+defineReplace(dirName) {
+    path = $$1
+    dir_name = $$dirname(path)
+    RET = $$lastElement(dir_name, "/")
+    return ($$RET)
+}
+
+defineReplace(lastElement) {
+    string = $$1
+    delimiter = $$2
+    parts = $$split(string, $$delimiter)
+    RET = $$last(parts)
+    return ($$RET)
 }
 
 !linux {
@@ -39,6 +62,10 @@ defineReplace(fileName) {
         path = $$shadowed($$SOURCE_ROOT_DIR )
         return ($$path)
     }
+    defineReplace(rmdir) {
+        message("unimplemented")
+        return ("")
+    }
 } else {
     defineReplace(realPath) {
         path = $$system(realpath $$1)
@@ -47,12 +74,27 @@ defineReplace(fileName) {
     defineReplace(shadowedRootPath) {
         ## "shadowed" function is broken under Linux -- it returns invalid result in case of symlinks
         REAL_OUT_PWD = $$realPath( $$OUT_PWD )
+#        message("aaaaa2:" $$OUT_PWD $$REAL_OUT_PWD)
         REL_PATH = $$relative_path( $$REAL_OUT_PWD, $$SOURCE_ROOT_DIR)
+#        message("aaaaa3:" $$SOURCE_ROOT_DIR $$REL_PATH)
         DIRS_LIST = $$split(REL_PATH, /))
         $$take_first( DIRS_LIST )
         BUILD_ROOT_DIR = $$SOURCE_ROOT_DIR"/../"$$first(DIRS_LIST)
         BUILD_ROOT_DIR = $$clean_path($$BUILD_ROOT_DIR)
         return ($$BUILD_ROOT_DIR)
     }
+    defineReplace(rmdir) {
+        $$system(rm -rf $$1);
+        return ("")
+    }
 }
 
+
+defineTest(isDir) {
+    path = $$1
+    exists( $$path/* ) {
+        return (true)
+    } else {
+        return (false)
+    }
+}

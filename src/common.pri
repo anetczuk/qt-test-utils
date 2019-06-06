@@ -34,12 +34,12 @@
 ## QtCreator's Profile mode is configured as Release
 
 
-include( "config.pri" )
-
 include( "paths.pri" )
 
 
-PROJECT_NAME = $$fileName($$_PRO_FILE_)
+PROJECT_NAME = $$fileName( $$_PRO_FILE_ )
+PROJECT_FILE_NAME = $$basename( _PRO_FILE_ )
+PROJECT_DIR_NAME = $$dirName( $$_PRO_FILE_ )
 
 SOURCE_ROOT_DIR = $$realPath( $$PWD )
 SOURCE_CURRENT_DIR = $$realPath( $$_PRO_FILE_PWD_ )
@@ -53,16 +53,32 @@ BUILD_CURRENT_DIR = $$realPath( $$OUT_PWD )
 #message("common BUILD_CURRENT_DIR:" $$BUILD_CURRENT_DIR)
 
 
-BUILD_DIR = .
+BUILD_SUBDIR = .
 #CONFIG(debug, debug|release) {
-#	BUILD_DIR = debug
+#	BUILD_SUBDIR = debug
 #}
 #CONFIG(release, debug|release) {
-#	BUILD_DIR = release
+#	BUILD_SUBDIR = release
 #}
+
+
+equals(PROJECT_DIR_NAME, $$PROJECT_NAME) {
+    BUILD_PROJECT_SUBDIR = $$BUILD_SUBDIR
+} else {
+    BUILD_PROJECT_SUBDIR = $$PROJECT_NAME/$$BUILD_SUBDIR
+}
+
+OBJECTS_DIR = $$BUILD_PROJECT_SUBDIR
+MOC_DIR = $$BUILD_PROJECT_SUBDIR
+RCC_DIR = $$BUILD_PROJECT_SUBDIR
+UI_DIR = $$BUILD_PROJECT_SUBDIR
+DLLDESTDIR = $$BUILD_PROJECT_SUBDIR
+DESTDIR = $$BUILD_PROJECT_SUBDIR
+
 
 
 include(codecoverage.pri)
+
 
 
 ##
@@ -84,7 +100,7 @@ defineTest(linkStaticLibrary) {
         lib_target_name = $$lib_build_dir
     }
 
-    LIB_DIR = $$BUILD_ROOT_DIR/$$lib_build_dir/$$BUILD_DIR
+    LIB_DIR = $$BUILD_ROOT_DIR/$$lib_build_dir/$$BUILD_SUBDIR
     !exists( $$LIB_DIR ) {
           message( "Static lib build dir not found:" $$LIB_DIR )
     }

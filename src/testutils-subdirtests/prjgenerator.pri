@@ -22,24 +22,50 @@
 ##
 
 
-PRJ_TEMPLATE_PATH = "prjtest.pro.template"
-ABS_PRJ_TEMPLATE_PATH = $$absolute_path( $$PRJ_TEMPLATE_PATH )
+PRJ_FILE_TEMPLATE_PATH = "prjtest.pro.template"
+ABS_PRJ_FILE_TEMPLATE_PATH = $$absolute_path( $$PRJ_FILE_TEMPLATE_PATH )
+
+PRJ_DIR_TEMPLATE_PATH = "prjdir.pro.template"
+ABS_PRJ_DIR_TEMPLATE_PATH = $$absolute_path( $$PRJ_DIR_TEMPLATE_PATH )
+
 
 ##
 ## params:
 ##      out_file_path   - path to output pro file
-##      source_file     - source file to include
+##      include_file     - source file to include
 ##
 defineTest(generatePrj) {
-    file_path = $$1
+    out_file_path = $$1
     include_file = $$2
 
-    FILE_TEMPLATE = $$cat( $$PRJ_TEMPLATE_PATH, blob )
-    FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @TEMPLATE_FILE_PATH@, $$ABS_PRJ_TEMPLATE_PATH )
+    FILE_TEMPLATE = $$cat( $$ABS_PRJ_FILE_TEMPLATE_PATH, blob )
+    FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @TEMPLATE_FILE_PATH@, $$ABS_PRJ_FILE_TEMPLATE_PATH )
     FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SOURCE_FILE@, $$include_file )
     FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SOURCE_ROOT_DIR@, $$SOURCE_ROOT_DIR )
 
-    write_file( $$file_path, FILE_TEMPLATE )
+    write_file( $$out_file_path, FILE_TEMPLATE )
+}
+
+
+##
+## params:
+##      out_file_path   - path to output pro file
+##      subdir_name     - source file to include
+##
+defineTest(generateSubdirPrj) {
+    out_file_path = $$1
+
+    subdir_name = $$fileName($$out_file_path)
+
+#    message("generating dir prj:" $$out_file_path )
+
+    FILE_TEMPLATE = $$cat( $$ABS_PRJ_DIR_TEMPLATE_PATH, blob )
+    FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @TEMPLATE_FILE_PATH@, $$ABS_PRJ_DIR_TEMPLATE_PATH )
+    FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SOURCE_ROOT@, $$SOURCE_ROOT_DIR )
+    FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SUBDIRS_ROOT@, $$SOURCE_CURRENT_DIR )
+    FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SUBDIR@, $$subdir_name )
+
+    write_file( $$out_file_path, FILE_TEMPLATE )
 }
 
 
@@ -48,40 +74,107 @@ defineTest(generatePrj) {
 ##
 defineReplace(generatePrjFromList) {
     sources_list = $$1
-    prj_list =
+    gen_root_dir = $$2
+
+    handled_dirs =
+
     for(FILENAME, sources_list){
         REL_PATH = $$relative_path( $$FILENAME, $$SOURCE_ROOT_DIR )
         PRJ_DIR = $$dirname( REL_PATH )
+
+        prj_dirs_list = $$split( PRJ_DIR, /)
+        curr_dir = "."
+        for(DIRITEM, prj_dirs_list){
+            curr_dir = $$curr_dir"/"$$DIRITEM
+            !contains( handled_dirs, $$curr_dir ) {
+                handled_dirs += $$curr_dir
+                ## create subdir prj
+#                GEN_PATH = $$gen_root_dir/$$curr_dir/$$DIRITEM".pro"
+                GEN_PATH = $$gen_root_dir/$$curr_dir/../$$DIRITEM".pro"
+#                message("generating subdir:" $$GEN_PATH)
+                generateSubdirPrj( $$GEN_PATH )
+            }
+        }
+
+        ## create subproject
         PRJ_NAME = $$fileName($$FILENAME)
-        #GEN_PATH = $$BUILD_CURRENT_DIR"/gen/"$$PRJ_DIR/$$PRJ_NAME/$$PRJ_NAME".pro"
-        GEN_PATH = $$BUILD_CURRENT_DIR/$$PRJ_DIR/$$PRJ_NAME/$$PRJ_NAME".pro"
+        GEN_PATH = $$gen_root_dir/$$PRJ_DIR/$$PRJ_NAME".pro"
+#        GEN_PATH = $$gen_root_dir/$$PRJ_DIR/$$PRJ_NAME/$$PRJ_NAME".pro"
+#        message("generating project:" $$GEN_PATH $$FILENAME)
         generatePrj($$GEN_PATH, $$FILENAME)
-        prj_list += $$GEN_PATH
     }
-    return ($$prj_list)
+
+    return ()
 }
 
 
 ###
-### Function based on: https://wiki.qt.io/Undocumented_QMake
+### Functions based on: https://wiki.qt.io/Undocumented_QMake
 ###
-# addSubdirs(subdirs,deps): Adds directories to the project that depend on
+
+# addSubprojects(subdirs,deps): Adds directories to the project that depend on
 # other directories
-defineTest(addFiles) {
-    subdirs_param = $$1
-#    deps_param = $$2
-    for(subdirs, subdirs_param) {
-        entries = $$files($$subdirs, true)
-        for(entry, entries) {
-            subtarget = $$replace(entry, [/\\\\], _)
-            subtarget = $$replace(subtarget, -, _)
-            subtarget = $$replace(subtarget, \., _)
-            SUBDIRS += $$subtarget
-            eval ($${subtarget}.file = $$entry)
-##            for(dep, deps_param):eval ($${subtarget}.depends += $$replace(dep, [/\\\\], _))
-            export ($${subtarget}.file)
-            export ($${subtarget}.depends)
+defineTest(addSubprojects) {
+    projects_paths_list = $$1
+    for(project_path, projects_paths_list) {
+        found_files = $$files($$project_path, false)
+        for(item_path, found_files) {
+            equals( item_path, $$PROJECT_FILE_NAME ) {
+                # found itself or parent -- skip
+            } else {
+                isDir( $$item_path ) {
+                    addSubprojectDir( $$item_path )
+                } else {
+                    addSubprojectFile( $$item_path )
+                }
+            }
         }
     }
+}
+
+defineTest(addSubprojectFile) {
+    subdir_path = $$1
+#    deps_param = $$2
+
+    item_ext = $$fileExtension( $$subdir_path )
+    !equals( item_ext, "pro" ) {
+        ## file with wrong extension -- exiting
+        return ()
+    }
+
+    subtarget = $$prepareTargetNameFromPath($$subdir_path)
+    eval ($${subtarget}.file = $$subdir_path)
+##            for(dep, deps_param):eval ($${subtarget}.depends += $$replace(dep, [/\\\\], _))
+    SUBDIRS += $$subtarget
+    export ($${subtarget}.file)
+    export ($${subtarget}.depends)
     export (SUBDIRS)
+}
+
+defineTest(addSubprojectDir) {
+    subdir_path = $$1
+#    deps_param = $$2
+
+    pro_file_path = $$subdir_path/$$lastElement( $$subdir_path, "/" )".pro"
+    !exists( $$pro_file_path ) {
+        ## pro file not exists -- exiting
+        return ()
+    }
+
+    subtarget = $$prepareTargetNameFromPath($$subdir_path)
+    eval ($${subtarget}.subdir = $$subdir_path)
+##            for(dep, deps_param):eval ($${subtarget}.depends += $$replace(dep, [/\\\\], _))
+    SUBDIRS += $$subtarget
+    export ($${subtarget}.subdir)
+    export ($${subtarget}.depends)
+    export (SUBDIRS)
+}
+
+
+defineReplace(prepareTargetNameFromPath) {
+    targetname = $$replace(1, [/\\\\], _)
+    targetname = $$replace(targetname, -, _)
+    targetname = $$replace(targetname, \., _)
+    targetname = $$replace(targetname, " ", _)
+    return ($$targetname)
 }

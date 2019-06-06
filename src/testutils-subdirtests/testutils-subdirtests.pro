@@ -31,14 +31,15 @@ include(../common.pri)
 include(prjgenerator.pri)
 
 
-TEST_SOURCES += $$files($$SOURCE_ROOT_DIR/tst_*.cpp, true)
+OTHER_FILES += $$files(*.template, false)
 
 
-OTHER_FILES += $$files(*.*, false)
-OTHER_FILES -= $$basename(_PRO_FILE_)
+#GEN_ROOT = $$BUILD_CURRENT_DIR/gen
 
+#TEST_SOURCES += $$files($$SOURCE_ROOT_DIR/tst_*.cpp, true)
+#$$generatePrjFromList( $$TEST_SOURCES, $$GEN_ROOT );
 
-GEN_LIST = $$generatePrjFromList( $$TEST_SOURCES )
+#addSubprojects( $$GEN_ROOT/*.pro )
 
-addFiles( $$GEN_LIST )
-#addFiles( $$BUILD_CURRENT_DIR"/*.pro" )
+addSubprojects( qttests )
+addSubprojects( quicktests )
