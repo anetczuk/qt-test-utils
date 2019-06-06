@@ -6,6 +6,6 @@
 TEMPLATE = subdirs
 
 include( @SOURCE_ROOT@/common.pri )
-include( @SUBDIRS_ROOT@/prjgenerator.pri )
+include( @SUBDIRS_ROOT@/subdirs.pri )
 
 addSubprojects( * )

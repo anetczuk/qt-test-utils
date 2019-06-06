@@ -6,6 +6,6 @@
 TEMPLATE = subdirs
 
 include( /media/L3/home/bob/Stuff/cpp/qt-test-utils/src/common.pri )
-include( /media/L3/home/bob/Stuff/cpp/qt-test-utils/src/testutils-subdirtests/prjgenerator.pri )
+include( /media/L3/home/bob/Stuff/cpp/qt-test-utils/src/testutils-subdirtests/subdirs.pri )
 
 addSubprojects( * )

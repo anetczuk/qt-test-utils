@@ -28,6 +28,7 @@ SUBDIRS =
 
 include(../common.pri)
 
+include(subdirs.pri)
 include(prjgenerator.pri)
 
 
