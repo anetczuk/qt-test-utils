@@ -42,5 +42,8 @@ OTHER_FILES += $$files(*.template, false)
 
 #addSubprojects( $$GEN_ROOT/*.pro )
 
+$$generateSubdirsStructure( $$SOURCE_ROOT_DIR/testutils-qttests/src, $$SOURCE_CURRENT_DIR/qttests );
+$$generateSubdirsStructure( $$SOURCE_ROOT_DIR/testutils-quicktests/src, $$SOURCE_CURRENT_DIR/quicktests );
+
 addSubprojects( qttests )
 addSubprojects( quicktests )

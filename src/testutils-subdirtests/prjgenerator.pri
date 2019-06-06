@@ -50,12 +50,18 @@ defineTest(generatePrj) {
 ##
 ## params:
 ##      out_file_path   - path to output pro file
-##      subdir_name     - source file to include
 ##
 defineTest(generateSubdirPrj) {
     out_file_path = $$1
 
     subdir_name = $$fileName($$out_file_path)
+
+#    dir_path = $$dirname(out_file_path)
+##    rel_path = $$relative_path( $$dir_path, $$PWD )
+#    !exists( $$dir_path ) {
+#        message("dir:" $$dir_path)
+#        mkpath( $$dir_path )
+#    }
 
 #    message("generating dir prj:" $$out_file_path )
 
@@ -63,9 +69,8 @@ defineTest(generateSubdirPrj) {
     FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @TEMPLATE_FILE_PATH@, $$ABS_PRJ_DIR_TEMPLATE_PATH )
     FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SOURCE_ROOT@, $$SOURCE_ROOT_DIR )
     FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SUBDIRS_ROOT@, $$SOURCE_CURRENT_DIR )
-    FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SUBDIR@, $$subdir_name )
 
-    write_file( $$out_file_path, FILE_TEMPLATE )
+    write_file( $$out_file_path, FILE_TEMPLATE, append )
 }
 
 
@@ -106,3 +111,36 @@ defineReplace(generatePrjFromList) {
 
     return ()
 }
+
+
+defineReplace(generateSubdirsStructure) {
+    source_dir_path = $$1
+    destination_dir_path = $$2
+
+    structure = $$files( $$source_dir_path/*, true )
+
+    for(item, structure) {
+        rel_path = $$relative_path( $$item, $$source_dir_path )
+        target_path = $$destination_dir_path/$$rel_path
+        isDir( $$item ) {
+            target_pro_path = $$target_path/$$lastElement( $$rel_path, "/" )".pro"
+            !exists( $$target_pro_path ) {
+                generateSubdirPrj( $$target_pro_path )
+                message("generated subdirs project:" $$target_pro_path )
+            }
+        } else {
+            file_name = $$basename( target_path )
+            RESULT = $$find(file_name, "^tst_.*\.cpp$")
+            count(RESULT, 1) {
+                ## found test case
+                pro_path = $$dropLast( $$target_path, "." )".pro"
+                !exists( $$pro_path ) {
+                    generatePrj( $$pro_path, $$item)
+                    message("generated test project:" $$pro_path)
+                }
+            }
+        }
+    }
+    return ("")
+}
+

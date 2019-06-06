@@ -53,6 +53,18 @@ defineReplace(lastElement) {
     return ($$RET)
 }
 
+defineReplace(dropLast) {
+    string = $$1
+    delimiter = $$2
+
+    parts = $$split(string, $$delimiter)
+    $$take_last(parts)
+    RET = $$replace(parts, " ", $$delimiter)
+
+    return ($$RET)
+}
+
+
 !linux {
     defineReplace(realPath) {
         ## do nothing
