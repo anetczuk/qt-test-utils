@@ -41,7 +41,7 @@ defineReplace(fileExtension) {
 defineReplace(dirName) {
     path = $$1
     dir_name = $$dirname(path)
-    RET = $$lastElement(dir_name, "/")
+    RET = $$lastElement($$dir_name, "/")
     return ($$RET)
 }
 

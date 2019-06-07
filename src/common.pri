@@ -178,7 +178,7 @@ defineTest(generateResFile) {
     FILE_TEMPLATE += "    </qresource>"
     FILE_TEMPLATE += "</RCC>"
 
-    message( "generating resource file: " $$file_path )
+#    message( "generating resource file: " $$file_path )
     write_file( $$file_path, FILE_TEMPLATE )
 
     RESOURCES += $$file_path
