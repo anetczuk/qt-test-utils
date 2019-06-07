@@ -34,6 +34,16 @@
 ## QtCreator's Profile mode is configured as Release
 
 
+!equals( COMMON_PRI_GUARD, "" ) {
+    message("common.pri file can be loaded only once, loaded from:");
+    message( "-" $$COMMON_PRI_PREVIOUS_PRO );
+    message( "-" $$_PRO_FILE_ );
+    error("exiting")
+}
+COMMON_PRI_GUARD="xxx"
+COMMON_PRI_PREVIOUS_PRO=$$_PRO_FILE_
+
+
 include( "paths.pri" )
 
 
