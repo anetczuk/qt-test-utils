@@ -45,6 +45,7 @@ Only once:
 ### Other things:
 - *common.pri* contains example of function definition for qmake -- *linkStaticLibrary()* -- function demonstrates how to link static libraries
 - qmake function *generateResFile* from *common.pri* demonstrates how to dynamically generate resource file
+- directory *autosubdirs* contains qmake functions and templates for automatic generation of subdirs projects for calling Qt tests in *executable per test* mode (default for Qt). *testutils-subdirtests* is example of use
 
 
 ### Known bugs:
