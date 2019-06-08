@@ -29,7 +29,7 @@ QT += qml quick widgets
 CONFIG += c++11 staticlib
 
 
-include(../common.pri)
+include( ../common.pri )
 
 
 HEADERS += $$files(src/*.h, true)

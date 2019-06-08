@@ -44,14 +44,11 @@ COMMON_PRI_GUARD="xxx"
 COMMON_PRI_PREVIOUS_PRO=$$_PRO_FILE_
 
 
-include( "paths.pri" )
-
-
 PROJECT_NAME = $$fileName( $$_PRO_FILE_ )
 PROJECT_FILE_NAME = $$basename( _PRO_FILE_ )
 PROJECT_DIR_NAME = $$dirName( $$_PRO_FILE_ )
 
-SOURCE_ROOT_DIR = $$realPath( $$PWD )
+##SOURCE_ROOT_DIR = $$realPath( $$PWD )                 ## moved to .qmake.conf
 SOURCE_CURRENT_DIR = $$realPath( $$_PRO_FILE_PWD_ )
 BUILD_ROOT_DIR = $$shadowedRootPath()
 BUILD_CURRENT_DIR = $$realPath( $$OUT_PWD )

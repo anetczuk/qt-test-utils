@@ -44,12 +44,10 @@ defineTest(generatePrj) {
     }
 
     out_dir = $$dirname( out_file_path )
-    relative_source_root_dir = $$relative_path( $$SOURCE_ROOT_DIR, $$out_dir )
     relative_include_file = $$relative_path( $$include_file, $$out_dir )
 
     FILE_TEMPLATE = $$cat( $$ABS_PRJ_FILE_TEMPLATE_PATH, blob )
     FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @TEMPLATE_FILE_PATH@, $$ABS_PRJ_FILE_TEMPLATE_PATH )
-    FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SOURCE_ROOT_DIR@, $$relative_source_root_dir )
     FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SOURCE_FILE@, $$relative_include_file )
 
     write_file( $$out_file_path, FILE_TEMPLATE )
@@ -70,12 +68,8 @@ defineTest(generateSubdirPrj) {
         write_file( $$out_file_path )
     }
 
-    out_dir = $$dirname( out_file_path )
-    relative_source_root_dir = $$relative_path( $$SOURCE_ROOT_DIR, $$out_dir )
-
     FILE_TEMPLATE = $$cat( $$ABS_PRJ_DIR_TEMPLATE_PATH, blob )
     FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @TEMPLATE_FILE_PATH@, $$ABS_PRJ_DIR_TEMPLATE_PATH )
-    FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SOURCE_ROOT@, $$relative_source_root_dir )
 
     write_file( $$out_file_path, FILE_TEMPLATE, append )
 }

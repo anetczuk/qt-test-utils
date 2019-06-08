@@ -26,10 +26,10 @@ TEMPLATE = subdirs
 SUBDIRS =
 
 
-include(../common.pri)
+include( ../common.pri )
 
-include($$SOURCE_ROOT_DIR/autosubdirs/subdirs.pri)
-include($$SOURCE_ROOT_DIR/autosubdirs/prjgenerator.pri)
+include( $$SOURCE_ROOT_DIR/autosubdirs/subdirs.pri )
+include( $$SOURCE_ROOT_DIR/autosubdirs/prjgenerator.pri )
 
 
 OTHER_FILES += $$files(*.template, false)

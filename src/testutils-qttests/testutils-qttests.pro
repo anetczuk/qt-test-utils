@@ -29,7 +29,7 @@ QT += qml quick widgets testlib
 CONFIG += c++11 qmltestcase
 
 
-include(../common.pri)
+include( ../common.pri )
 
 
 HEADERS += $$files(src/*.h, true)
