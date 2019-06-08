@@ -41,4 +41,5 @@ testutils-subdirtests.depends = testutils
 
 
 OTHER_FILES +=  $$files(../*.*, false) \
+                $$files(autosubdirs/*.*, false) \
                 .qmake.conf

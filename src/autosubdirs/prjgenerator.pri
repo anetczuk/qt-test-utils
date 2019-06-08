@@ -38,10 +38,19 @@ defineTest(generatePrj) {
     out_file_path = $$1
     include_file = $$2
 
+    exists( $$out_file_path ) {
+        ## erase content of file
+        write_file( $$out_file_path )
+    }
+
+    out_dir = $$dirname( out_file_path )
+    relative_source_root_dir = $$relative_path( $$SOURCE_ROOT_DIR, $$out_dir )
+    relative_include_file = $$relative_path( $$include_file, $$out_dir )
+
     FILE_TEMPLATE = $$cat( $$ABS_PRJ_FILE_TEMPLATE_PATH, blob )
     FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @TEMPLATE_FILE_PATH@, $$ABS_PRJ_FILE_TEMPLATE_PATH )
-    FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SOURCE_FILE@, $$include_file )
-    FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SOURCE_ROOT_DIR@, $$SOURCE_ROOT_DIR )
+    FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SOURCE_ROOT_DIR@, $$relative_source_root_dir )
+    FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SOURCE_FILE@, $$relative_include_file )
 
     write_file( $$out_file_path, FILE_TEMPLATE )
 }
@@ -56,19 +65,17 @@ defineTest(generateSubdirPrj) {
 
     subdir_name = $$fileName($$out_file_path)
 
-#    dir_path = $$dirname(out_file_path)
-##    rel_path = $$relative_path( $$dir_path, $$PWD )
-#    !exists( $$dir_path ) {
-#        message("dir:" $$dir_path)
-#        mkpath( $$dir_path )
-#    }
+    exists( $$out_file_path ) {
+        ## erase content of file
+        write_file( $$out_file_path )
+    }
 
-#    message("generating dir prj:" $$out_file_path )
+    out_dir = $$dirname( out_file_path )
+    relative_source_root_dir = $$relative_path( $$SOURCE_ROOT_DIR, $$out_dir )
 
     FILE_TEMPLATE = $$cat( $$ABS_PRJ_DIR_TEMPLATE_PATH, blob )
     FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @TEMPLATE_FILE_PATH@, $$ABS_PRJ_DIR_TEMPLATE_PATH )
-    FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SOURCE_ROOT@, $$SOURCE_ROOT_DIR )
-    FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SUBDIRS_ROOT@, $$SOURCE_CURRENT_DIR )
+    FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SOURCE_ROOT@, $$relative_source_root_dir )
 
     write_file( $$out_file_path, FILE_TEMPLATE, append )
 }
@@ -113,34 +120,51 @@ defineReplace(generatePrjFromList) {
 }
 
 
-defineReplace(generateSubdirsStructure) {
+defineTest(generateSubdirsTree) {
     source_dir_path = $$1
     destination_dir_path = $$2
+    recursive = $$3
+    override_pro = $$4
 
-    structure = $$files( $$source_dir_path/*, true )
+    !equals( recursive, "true") {
+        recursive = "false"
+    }
+
+    structure = $$files( $$source_dir_path/*, $$recursive )
 
     for(item, structure) {
-        rel_path = $$relative_path( $$item, $$source_dir_path )
-        target_path = $$destination_dir_path/$$rel_path
-        isDir( $$item ) {
-            target_pro_path = $$target_path/$$lastElement( $$rel_path, "/" )".pro"
-            !exists( $$target_pro_path ) {
-                generateSubdirPrj( $$target_pro_path )
-                message("generated subdirs project:" $$target_pro_path )
-            }
-        } else {
-            file_name = $$basename( target_path )
-            RESULT = $$find(file_name, "^tst_.*\.cpp$")
-            count(RESULT, 1) {
-                ## found test case
-                pro_path = $$dropLast( $$target_path, "." )".pro"
-                !exists( $$pro_path ) {
-                    generatePrj( $$pro_path, $$item)
-                    message("generated test project:" $$pro_path)
-                }
+        _generateSubdir( $$source_dir_path, $$item, $$destination_dir_path, $$override_pro);
+    }
+    return (true)
+}
+
+
+defineTest(_generateSubdir) {
+    source_dir_path = $$1
+    item = $$2
+    destination_dir_path = $$3
+    override_pro = $$4
+
+    rel_path = $$relative_path( $$item, $$source_dir_path )
+    target_path = $$destination_dir_path/$$rel_path
+    isDir( $$item ) {
+        target_pro_path = $$target_path/$$lastElement( $$item, "/" )".pro"
+        !exists( $$target_pro_path ) | equals( override_pro, "true" ) {
+            generateSubdirPrj( $$target_pro_path )
+            message("generated subdirs project:" $$target_pro_path )
+        }
+    } else {
+        file_name = $$basename( target_path )
+        RESULT = $$find(file_name, "^tst_.*\.cpp$")
+        count(RESULT, 1) {
+            ## found test case
+            pro_path = $$dropLast( $$target_path, "." )".pro"
+            !exists( $$pro_path ) | equals( override_pro, "true" ) {
+                generatePrj( $$pro_path, $$item)
+                message("generated test project:" $$pro_path)
             }
         }
     }
-    return ("")
+    return (true)
 }
 

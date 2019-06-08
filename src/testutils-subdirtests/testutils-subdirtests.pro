@@ -28,22 +28,21 @@ SUBDIRS =
 
 include(../common.pri)
 
-include(subdirs.pri)
-include(prjgenerator.pri)
+include($$SOURCE_ROOT_DIR/autosubdirs/subdirs.pri)
+include($$SOURCE_ROOT_DIR/autosubdirs/prjgenerator.pri)
 
 
 OTHER_FILES += $$files(*.template, false)
 
 
-#GEN_ROOT = $$BUILD_CURRENT_DIR/gen
+override_pro = "false"
 
-#TEST_SOURCES += $$files($$SOURCE_ROOT_DIR/tst_*.cpp, true)
-#$$generatePrjFromList( $$TEST_SOURCES, $$GEN_ROOT );
-
-#addSubprojects( $$GEN_ROOT/*.pro )
-
-$$generateSubdirsStructure( $$SOURCE_ROOT_DIR/testutils-qttests/src, $$SOURCE_CURRENT_DIR/qttests );
-$$generateSubdirsStructure( $$SOURCE_ROOT_DIR/testutils-quicktests/src, $$SOURCE_CURRENT_DIR/quicktests );
+equals( override_pro, "true") {
+    generateSubdirPrj( $$SOURCE_CURRENT_DIR/qttests/qttests.pro, $$override_pro );
+    generateSubdirPrj( $$SOURCE_CURRENT_DIR/quicktests/quicktests.pro, $$override_pro );
+}
+generateSubdirsTree( $$SOURCE_ROOT_DIR/testutils-qttests/src, $$SOURCE_CURRENT_DIR/qttests, true, $$override_pro );
+generateSubdirsTree( $$SOURCE_ROOT_DIR/testutils-quicktests/src, $$SOURCE_CURRENT_DIR/quicktests, true, $$override_pro );
 
 addSubprojects( qttests )
 addSubprojects( quicktests )
