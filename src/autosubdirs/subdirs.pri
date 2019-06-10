@@ -40,6 +40,8 @@ defineTest(addSubprojects) {
             }
         }
     }
+
+    return(true)
 }
 
 
@@ -54,7 +56,7 @@ defineTest(addSubprojectFile) {
     item_ext = $$fileExtension( $$subdir_path )
     !equals( item_ext, "pro" ) {
         ## file with wrong extension -- exiting
-        return ()
+        return(false)
     }
 
     subtarget = $$prepareTargetNameFromPath($$subdir_path)
@@ -64,6 +66,8 @@ defineTest(addSubprojectFile) {
     export ($${subtarget}.file)
     export ($${subtarget}.depends)
     export (SUBDIRS)
+
+    return(true)
 }
 
 defineTest(addSubprojectDir) {
@@ -73,7 +77,7 @@ defineTest(addSubprojectDir) {
     pro_file_path = $$subdir_path/$$lastElement( $$subdir_path, "/" )".pro"
     !exists( $$pro_file_path ) {
         ## pro file not exists -- exiting
-        return ()
+        return(false)
     }
 
     subtarget = $$prepareTargetNameFromPath($$subdir_path)
@@ -83,6 +87,8 @@ defineTest(addSubprojectDir) {
     export ($${subtarget}.subdir)
     export ($${subtarget}.depends)
     export (SUBDIRS)
+
+    return(true)
 }
 
 defineReplace(prepareTargetNameFromPath) {
@@ -90,5 +96,5 @@ defineReplace(prepareTargetNameFromPath) {
     targetname = $$replace(targetname, -, _)
     targetname = $$replace(targetname, \., _)
     targetname = $$replace(targetname, " ", _)
-    return ($$targetname)
+    return($$targetname)
 }

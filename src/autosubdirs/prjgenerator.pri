@@ -51,6 +51,8 @@ defineTest(generatePrj) {
     FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @SOURCE_FILE@, $$relative_include_file )
 
     write_file( $$out_file_path, FILE_TEMPLATE )
+
+    return(true)
 }
 
 
@@ -72,45 +74,8 @@ defineTest(generateSubdirPrj) {
     FILE_TEMPLATE = $$replace( FILE_TEMPLATE, @TEMPLATE_FILE_PATH@, $$ABS_PRJ_DIR_TEMPLATE_PATH )
 
     write_file( $$out_file_path, FILE_TEMPLATE, append )
-}
 
-
-##
-## Generate projects for list of source files.
-##
-defineReplace(generatePrjFromList) {
-    sources_list = $$1
-    gen_root_dir = $$2
-
-    handled_dirs =
-
-    for(FILENAME, sources_list){
-        REL_PATH = $$relative_path( $$FILENAME, $$SOURCE_ROOT_DIR )
-        PRJ_DIR = $$dirname( REL_PATH )
-
-        prj_dirs_list = $$split( PRJ_DIR, /)
-        curr_dir = "."
-        for(DIRITEM, prj_dirs_list){
-            curr_dir = $$curr_dir"/"$$DIRITEM
-            !contains( handled_dirs, $$curr_dir ) {
-                handled_dirs += $$curr_dir
-                ## create subdir prj
-#                GEN_PATH = $$gen_root_dir/$$curr_dir/$$DIRITEM".pro"
-                GEN_PATH = $$gen_root_dir/$$curr_dir/../$$DIRITEM".pro"
-#                message("generating subdir:" $$GEN_PATH)
-                generateSubdirPrj( $$GEN_PATH )
-            }
-        }
-
-        ## create subproject
-        PRJ_NAME = $$fileName($$FILENAME)
-        GEN_PATH = $$gen_root_dir/$$PRJ_DIR/$$PRJ_NAME".pro"
-#        GEN_PATH = $$gen_root_dir/$$PRJ_DIR/$$PRJ_NAME/$$PRJ_NAME".pro"
-#        message("generating project:" $$GEN_PATH $$FILENAME)
-        generatePrj($$GEN_PATH, $$FILENAME)
-    }
-
-    return ()
+    return(true)
 }
 
 
@@ -129,7 +94,8 @@ defineTest(generateSubdirsTree) {
     for(item, structure) {
         _generateSubdir( $$source_dir_path, $$item, $$destination_dir_path, $$override_pro);
     }
-    return (true)
+
+    return(true)
 }
 
 
@@ -159,6 +125,7 @@ defineTest(_generateSubdir) {
             }
         }
     }
-    return (true)
+
+    return(true)
 }
 

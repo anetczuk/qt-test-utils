@@ -129,6 +129,8 @@ defineTest(linkStaticLibrary) {
     export(LIBS)
     export(INCLUDEPATH)
     export(PRE_TARGETDEPS)
+
+    return(true)
 }
 
 
@@ -141,7 +143,7 @@ defineReplace(staticLibName) {
         ## unix/macx
         lib_name = "lib$$lib_target_name"".a"
     }
-    return ($$lib_name)
+    return($$lib_name)
 }
 
 
@@ -180,4 +182,6 @@ defineTest(generateResFile) {
 
     RESOURCES += $$file_path
     export(RESOURCES)
+
+    return(true)
 }

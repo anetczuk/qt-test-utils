@@ -27,7 +27,7 @@ defineReplace(fileName) {
     base_name = $$basename(path)
     base_name_parts = $$split(base_name, ".")
     RET = $$first(base_name_parts)
-    return ($$RET)
+    return($$RET)
 }
 
 defineReplace(fileExtension) {
@@ -35,14 +35,14 @@ defineReplace(fileExtension) {
     dir_name = $$basename(path)
     dir_name_parts = $$split(dir_name, ".")
     RET = $$last(dir_name_parts)
-    return ($$RET)
+    return($$RET)
 }
 
 defineReplace(dirName) {
     path = $$1
     dir_name = $$dirname(path)
     RET = $$lastElement($$dir_name, "/")
-    return ($$RET)
+    return($$RET)
 }
 
 defineReplace(lastElement) {
@@ -50,7 +50,7 @@ defineReplace(lastElement) {
     delimiter = $$2
     parts = $$split(string, $$delimiter)
     RET = $$last(parts)
-    return ($$RET)
+    return($$RET)
 }
 
 defineReplace(dropLast) {
@@ -61,27 +61,27 @@ defineReplace(dropLast) {
     $$take_last(parts)
     RET = $$replace(parts, " ", $$delimiter)
 
-    return ($$RET)
+    return($$RET)
 }
 
 
 !linux {
     defineReplace(realPath) {
         ## do nothing
-        return ($$1)
+        return($$1)
     }
     defineReplace(shadowedRootPath) {
         path = $$shadowed($$SOURCE_ROOT_DIR )
-        return ($$path)
+        return($$path)
     }
     defineReplace(rmdir) {
         message("unimplemented")
-        return ("")
+        return("")
     }
 } else {
     defineReplace(realPath) {
         path = $$system(realpath $$1)
-        return ($$path)
+        return($$path)
     }
     defineReplace(shadowedRootPath) {
         ## "shadowed" function is broken under Linux -- it returns invalid result in case of symlinks
@@ -89,15 +89,15 @@ defineReplace(dropLast) {
 #        message("aaaaa2:" $$OUT_PWD $$REAL_OUT_PWD)
         REL_PATH = $$relative_path( $$REAL_OUT_PWD, $$SOURCE_ROOT_DIR)
 #        message("aaaaa3:" $$SOURCE_ROOT_DIR $$REL_PATH)
-        DIRS_LIST = $$split(REL_PATH, /))
+        DIRS_LIST = $$split(REL_PATH, /)
         $$take_first( DIRS_LIST )
         BUILD_ROOT_DIR = $$SOURCE_ROOT_DIR"/../"$$first(DIRS_LIST)
         BUILD_ROOT_DIR = $$clean_path($$BUILD_ROOT_DIR)
-        return ($$BUILD_ROOT_DIR)
+        return($$BUILD_ROOT_DIR)
     }
     defineReplace(rmdir) {
         $$system(rm -rf $$1);
-        return ("")
+        return("")
     }
 }
 
@@ -105,8 +105,8 @@ defineReplace(dropLast) {
 defineTest(isDir) {
     path = $$1
     exists( $$path/* ) {
-        return (true)
+        return(true)
     } else {
-        return (false)
+        return(false)
     }
 }
