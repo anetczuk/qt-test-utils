@@ -1,11 +1,12 @@
 ## qt-test-utils
-Extensions to Qt testing framework
+Extensions to Qt testing framework and tools for QMake.
 
 ### Features:
 - running all QtTest tests cases in one executable (usefull e.g. in case of one tests subproject in QtCreator)
 - calling QtTest and QtQuickTest tests by name using wildcard(*)
 - loading/saving images from/to file directly from Qml
 - comparing images and visualising difference between them from Qml
+- possibility to switch to standard Qt tests organization (executable per test file) and autogeneration of project files
 
 
 ### Example of generated diff image
@@ -46,6 +47,8 @@ Only once:
 - *common.pri* contains example of function definition for qmake -- *linkStaticLibrary()* -- function demonstrates how to link static libraries
 - qmake function *generateResFile* from *common.pri* demonstrates how to dynamically generate resource file
 - directory *autosubdirs* contains qmake functions and templates for automatic generation of subdirs projects for calling Qt tests in *executable per test* mode (default for Qt). *testutils-subdirtests* is example of use
+- *copy.pri* contains example how to use *custom compiler* feature of qmake
+- project contains *.qmake.conf* file demonstrating how to use it -- the file is loaded before each project file
 
 
 ### Known bugs:
