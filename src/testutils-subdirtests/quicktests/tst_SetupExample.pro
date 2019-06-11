@@ -21,5 +21,5 @@ SOURCES += "../../testutils-quicktests/src/tst_SetupExample.cpp"
 
 
 # include library
-linkStaticLibrary(testutils)
+include( $$SOURCE_ROOT_DIR/testutils/testutilsLink.pri )
 

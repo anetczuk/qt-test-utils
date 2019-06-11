@@ -58,4 +58,4 @@ POST_TARGETDEPS += resultsdir
 
 
 # include library
-linkStaticLibrary(testutils)
+include( ../testutils/testutilsLink.pri )

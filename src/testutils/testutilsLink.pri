@@ -21,41 +21,16 @@
 ## SOFTWARE.
 ##
 
-TEMPLATE = app
-TARGET = testutilsqttests
 
-QT += qml quick widgets testlib
+TARGET_NAME = testutils
 
-CONFIG += c++11 qmltestcase
+LIB_DIR = $$BUILD_ROOT_DIR/$$TARGET_NAME/$$BUILD_SUBDIR
+LIB_FILE_NAME = $$staticLibName( $$TARGET_NAME )
+LIB_PATH = $$LIB_DIR/$$LIB_FILE_NAME
 
-
-include( ../common.pri )
-
-
-HEADERS += $$files(src/*.h, true)
-
-SOURCES += $$files(src/*.cpp, true)
-
-OTHER_FILES += $$files(qml/*.qml, true)
-OTHER_FILES += $$files(data/*.*, true)
-
-#QML_FILES = $$files(qml/*.qml, true)
-#GEN_RES_PATH = "gen/$$PROJECT_NAME""res.qrc"
-#generateResFile($$GEN_RES_PATH, $$QML_FILES, "../")
-
-
-## copy data dir
-copydata.commands = $(COPY_DIR) $$PWD/data $$OUT_PWD
-QMAKE_EXTRA_TARGETS += copydata
-POST_TARGETDEPS += copydata
-
-
-## create tests results dir
-#resultsdir.target = $$OUT_PWD/tests
-resultsdir.commands = $(MKDIR) $$OUT_PWD/tests/diff
-QMAKE_EXTRA_TARGETS += resultsdir
-POST_TARGETDEPS += resultsdir
-
-
-# include library
-include( ../testutils/testutilsLink.pri )
+# link library
+LIBS += -L$$LIB_DIR -l$$TARGET_NAME
+# add library headers directory to search path
+INCLUDEPATH += $$SOURCE_ROOT_DIR/$$TARGET_NAME/src
+# configure dependency - causes target to rebuild when library changes (otherwise it causes nasty problems, at least under qmake 3.1)
+PRE_TARGETDEPS += $$LIB_PATH

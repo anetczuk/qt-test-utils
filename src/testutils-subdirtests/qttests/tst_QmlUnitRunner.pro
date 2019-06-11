@@ -21,5 +21,5 @@ SOURCES += "../../testutils-qttests/src/tst_QmlUnitRunner.cpp"
 
 
 # include library
-linkStaticLibrary(testutils)
+include( $$SOURCE_ROOT_DIR/testutils/testutilsLink.pri )
 
