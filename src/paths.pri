@@ -80,6 +80,9 @@ defineReplace(dropLast) {
     }
 } else {
     defineReplace(realPath) {
+        !exists($$1) {
+            return($$1)
+        }
         path = $$system(realpath $$1)
         return($$path)
     }

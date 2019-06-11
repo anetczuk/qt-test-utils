@@ -115,7 +115,7 @@ defineTest(linkStaticLibrary) {
     LIB_PATH = $$LIB_DIR/$$LIB_FILE_NAME
     #message("lib path:" $$LIB_PATH )
     !exists( $$LIB_PATH ) {
-          message( "Static lib not found:" $$LIB_PATH)
+          # message( "Static lib not found:" $$LIB_PATH)
     }
 
     # link library
