@@ -26,7 +26,6 @@
 #include "QuickTest.h"
 
 #include "QuickTestRunner.h"
-#include "ImageLoader.h"
 
 
 QUICK_TEST_MAIN(quicktests);                // redefined empty macro to inform QtCrator to detect test cases
@@ -41,10 +40,7 @@ int main(int argc, char *argv[]) {
 //    QTEST_ADD_GPU_BLACKLIST_SUPPORT
 //    QTEST_SET_MAIN_SOURCE_PATH
 
-    Q_INIT_RESOURCE(testutilsres);
-
-    qmlRegisterSingletonType<ImageLoader>("testutils", 1, 0, "ImageLoader", &ImageLoader::qmlInstance);
-    qmlRegisterInterface<QmlImage>("QmlImage");
+    registerTestUtilsQmlResources();
 
     std::string sourceDir( QUICK_TEST_SOURCE_DIR );
     sourceDir.append("/qml");

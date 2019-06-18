@@ -63,11 +63,7 @@ namespace testutils {
         Args(const QStringList& args): vec() {
             for(int i=0; i<args.size(); ++i) {
                 const std::string& str = args[i].toStdString();
-                const std::size_t strLen = str.length();
-                char* target = new char[ strLen+1 ];
-                str.copy(target, strLen);
-                target[strLen] = 0;
-                vec.push_back( target );
+                add(str);
             }
         }
 
@@ -84,6 +80,14 @@ namespace testutils {
 
         char** argv() {
             return &(vec[0]);
+        }
+
+        void add(const std::string& str) {
+            const std::size_t strLen = str.length();
+            char* target = new char[ strLen+1 ];
+            str.copy(target, strLen);
+            target[strLen] = 0;
+            vec.push_back( target );
         }
 
     };

@@ -23,11 +23,8 @@
 
 TEMPLATE = subdirs
 
-SUBDIRS = testutils
+SUBDIRS = testutils testutils-qttests testutils-quicktests
 
-
-## normal test subprojects
-SUBDIRS += testutils-qttests testutils-quicktests
 
 testutils-qttests.depends = testutils
 

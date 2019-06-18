@@ -23,13 +23,12 @@
 
 TEMPLATE = subdirs
 
-SUBDIRS = testutils
+SUBDIRS = testutils testutils-subdirtests testutils-quicktests
 
-
-## generated test subprojects
-SUBDIRS += testutils-subdirtests
 
 testutils-subdirtests.depends = testutils
+
+testutils-quicktests.depends = testutils
 
 
 OTHER_FILES +=  $$files(../*.*, false) \

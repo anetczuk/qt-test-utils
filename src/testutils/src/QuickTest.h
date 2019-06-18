@@ -28,8 +28,26 @@
 #include "QuickTestRunner.h"
 #include "ConcatMacro.h"
 
+#include "ImageLoader.h"
+
 
 #define QUICK_TEST_REGISTER( test_class )    static quicktestutils::RegisterTestUnit<test_class> PPCAT(TEST_CASE, __LINE__);
+
+
+#ifdef QUICK_TESTS_QML_ROOT_DIR
+    #define QUICK_TESTS_QML_SUBDIR ""
+#else
+    #define QUICK_TESTS_QML_ROOT_DIR QUICK_TEST_SOURCE_DIR
+    #define QUICK_TESTS_QML_SUBDIR "/qml"
+#endif
+
+
+inline void registerTestUtilsQmlResources() {
+    Q_INIT_RESOURCE(testutilsres);
+
+    qmlRegisterSingletonType<ImageLoader>("testutils", 1, 0, "ImageLoader", &ImageLoader::qmlInstance);
+    qmlRegisterInterface<QmlImage>("QmlImage");
+}
 
 
 #ifndef EXEC_PER_TESTCASE
@@ -43,10 +61,10 @@
     #undef QTEST_MAIN
     #define QTEST_MAIN( test_class )                                                                                                        \
                                 int main(int argc, char *argv[]) {                                                                          \
-                                    Q_INIT_RESOURCE(testutilsres);                                                                          \
+                                    registerTestUtilsQmlResources();                                                                        \
                                                                                                                                             \
-                                    std::string sourceDir( QUICK_TEST_SOURCE_DIR );                                                         \
-                                    sourceDir.append("/qml");                                                                               \
+                                    std::string sourceDir( QUICK_TESTS_QML_ROOT_DIR );                                                      \
+                                    sourceDir.append( QUICK_TESTS_QML_SUBDIR );                                                             \
                                                                                                                                             \
                                     return quicktestutils::run_tests( argc, argv, sourceDir.c_str() );                                      \
                                 }
