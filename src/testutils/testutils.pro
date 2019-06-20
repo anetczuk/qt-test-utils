@@ -26,7 +26,7 @@ TARGET = testutils
 
 QT += qml quick widgets
 
-CONFIG += c++11 staticlib
+CONFIG += c++11 staticlib object_parallel_to_source
 
 
 include( ../common.pri )
