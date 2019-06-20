@@ -50,25 +50,35 @@ inline void registerTestUtilsQmlResources() {
 }
 
 
-#ifndef EXEC_PER_TESTCASE
+#undef QUICK_TEST_MAIN
+#define QUICK_TEST_MAIN( tests_name )                                                                                                   \
+                            int main(int argc, char *argv[]) {                                                                          \
+                                registerTestUtilsQmlResources();                                                                        \
+                                                                                                                                        \
+                                std::string sourceDir( QUICK_TESTS_QML_ROOT_DIR );                                                      \
+                                sourceDir.append( QUICK_TESTS_QML_SUBDIR );                                                             \
+                                                                                                                                        \
+                                return quicktestutils::run_tests( argc, argv, sourceDir.c_str() );                                      \
+                            }
+
+
+#ifdef EXEC_PER_TESTCASE
+
+    #undef QTEST_MAIN
+    #define QTEST_MAIN( test_class )                                                                                                    \
+                            int main(int argc, char *argv[]) {                                                                          \
+                                registerTestUtilsQmlResources();                                                                        \
+                                QApplication app(argc, argv);                                                                           \
+                                test_class test;                                                                                        \
+                                const QStringList& appArgs = app.arguments();                                                           \
+                                return test.run( appArgs );                                                                             \
+                            }
+
+#else
 
     // redefine standard macro to keep compatibile with old code
     #undef QTEST_MAIN
     #define QTEST_MAIN( test_class )        QUICK_TEST_REGISTER( test_class )
-
-#else
-
-    #undef QTEST_MAIN
-    #define QTEST_MAIN( test_class )                                                                                                        \
-                                int main(int argc, char *argv[]) {                                                                          \
-                                    registerTestUtilsQmlResources();                                                                        \
-                                                                                                                                            \
-                                    std::string sourceDir( QUICK_TESTS_QML_ROOT_DIR );                                                      \
-                                    sourceDir.append( QUICK_TESTS_QML_SUBDIR );                                                             \
-                                                                                                                                            \
-                                    return quicktestutils::run_tests( argc, argv, sourceDir.c_str() );                                      \
-                                }
-
 
 #endif
 

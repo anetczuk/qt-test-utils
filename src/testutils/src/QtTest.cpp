@@ -34,6 +34,7 @@ namespace testutils {
         const QStringList arguments = convertArgs(argc, argv);
 
 //        qDebug() << "arguments:" << arguments;
+
 //        QFile ff("/tmp/aaa.log");
 //        ff.open( QFile::Append );
 //        for( auto& item: arguments) {

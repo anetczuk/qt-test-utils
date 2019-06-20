@@ -21,23 +21,22 @@
 /// SOFTWARE.
 ///
 
-#ifndef SRC_ALIB_SRC_QUICKTESTMAINSTUB_H_
-#define SRC_ALIB_SRC_QUICKTESTMAINSTUB_H_
+#ifndef SRC_ALIB_SRC_UNITTEST_H_
+#define SRC_ALIB_SRC_UNITTEST_H_
 
 
-// redefine macro to empty one
-#ifdef QTEST_MAIN
-    #undef QTEST_MAIN
+#ifdef QUICKTEST_H
+    // QuickTest mode
+    #include "QuickTest.h"
+
+#elif defined QTEST_H
+    // QTest mode
+    #include "QtTest.h"
+
+#else
+    #error "Unable to determine test mode (include Qt's QtTest or QuickTest header)"
+
 #endif
 
-#define QTEST_MAIN( name )
 
-
-#ifdef QUICK_TEST_MAIN
-    #undef QUICK_TEST_MAIN
-#endif
-
-#define QUICK_TEST_MAIN( name )
-
-
-#endif /* SRC_ALIB_SRC_QUICKTESTMAINSTUB_H_ */
+#endif /* SRC_ALIB_SRC_UNITTEST_H_ */

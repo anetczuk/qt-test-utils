@@ -116,7 +116,7 @@ namespace quicktestutils {
     }
 
     int QmlUnitRunner::run(const CmdParser& arguments, const char *sourceDir, QObject* setup) {
-//        qDebug() << "running qml with args:" << arguments << sourceDir;
+        //qDebug() << "running qml with args:" << arguments << sourceDir;
         if (arguments.contains("-functions")) {
             // print functions
             return executeQml(arguments, sourceDir, setup);
@@ -150,7 +150,8 @@ namespace quicktestutils {
 
     int QmlUnitRunner::executeQml(const CmdParser& arguments, const char *sourceDir, QObject* setup) {
         if ( QFile::exists(sourceDir) == false ) {
-            qWarning() << "Given source directory does not exists:" << sourceDir;
+            if (arguments.contains("-input") == false)
+                qWarning() << "Given source directory does not exists:" << sourceDir;
         }
         QStringList params = arguments.extractQmlParams();
         Args argsObj(params);

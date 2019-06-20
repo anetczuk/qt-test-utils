@@ -21,10 +21,12 @@
 /// SOFTWARE.
 ///
 
-#include "QtTest.h"
+#include <QtTest>
+#include "UnitTest.h"
 
 
 QTEST_RUN_TESTS()
+
 
 //QT_BEGIN_NAMESPACE
 //QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS

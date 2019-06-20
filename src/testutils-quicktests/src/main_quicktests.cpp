@@ -22,28 +22,13 @@
 ///
 
 #include <QtQuickTest/QtQuickTest>          // for QtCreator to detect test cases
-#include "QtTestMainStub.h"
 #include "QuickTest.h"
 
 #include "QuickTestRunner.h"
-
-
-QUICK_TEST_MAIN(quicktests);                // redefined empty macro to inform QtCrator to detect test cases
 
 
 //QT_BEGIN_NAMESPACE
 //QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS
 //QT_END_NAMESPACE
 
-int main(int argc, char *argv[]) {
-//    QTEST_DISABLE_KEYPAD_NAVIGATION
-//    QTEST_ADD_GPU_BLACKLIST_SUPPORT
-//    QTEST_SET_MAIN_SOURCE_PATH
-
-    registerTestUtilsQmlResources();
-
-    std::string sourceDir( QUICK_TEST_SOURCE_DIR );
-    sourceDir.append("/qml");
-
-    return quicktestutils::run_tests( argc, argv, sourceDir.c_str() );
-}
+QUICK_TEST_MAIN(quicktests);

@@ -21,7 +21,8 @@
 /// SOFTWARE.
 ///
 
-#include "QtTest.h"
+#include <QtTest>
+#include "UnitTest.h"
 
 #include "QmlImage.h"
 

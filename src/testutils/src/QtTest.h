@@ -30,7 +30,15 @@
 #include "ConcatMacro.h"
 
 
-#ifndef EXEC_PER_TESTCASE
+#ifdef EXEC_PER_TESTCASE
+
+    // old behaviour -- create executable per test case
+
+    #define QTEST_REGISTER( test_class )    QTEST_MAIN( test_class )
+
+    #define QTEST_RUN_TESTS()               // do nothing
+
+#else
 
     // new behaviour -- run all tests in one executable
 
@@ -53,14 +61,6 @@
     // redefine standard macro to keep compatibile with old code
     #undef QTEST_MAIN
     #define QTEST_MAIN( test_class )        QTEST_REGISTER( test_class )
-
-#else
-
-    // old behaviour -- create executable per test case
-
-    #define QTEST_REGISTER( test_class )    QTEST_MAIN( test_class )
-
-    #define QTEST_RUN_TESTS()               // do nothing
 
 #endif
 
