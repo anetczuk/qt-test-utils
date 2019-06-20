@@ -47,6 +47,7 @@ namespace quicktestutils {
     int run_tests(const QStringList& arguments, const char *sourceDir) {
 
 //        qDebug() << "arguments:" << arguments;
+
 //        QFile ff("/tmp/aaa2.log");
 //        ff.open( QFile::Append );
 //        for( auto& item: arguments) {
@@ -55,6 +56,8 @@ namespace quicktestutils {
 //        }
 //        ff.write("\n");
 //        ff.close();
+
+        //qDebug() << "source dir:" << sourceDir;
 
         QuickTestsRunner runner;
         return runner.run_tests(arguments, sourceDir);
@@ -146,7 +149,7 @@ namespace quicktestutils {
 
         const QStringList params = arguments.list();
 
-        // find and run unit
+        // find and run unit (with setup if needed)
         int failures = 0;
         QuickTestsRegistry& testsRegistry = getTestsRegistry();
         const std::size_t regSize = testsRegistry.size();

@@ -44,35 +44,32 @@ Rectangle {
 
 
         Rectangle {
+            id: rectangle001
 
             color: contextRectangleColor
             width: 100
             height: 100
 
-            TestCase {
-                name: "SetupExampleProps"
-                when: windowShown
-
-                function test_width() {
-                    compare( parent.width, 100 );
-                }
-
-                function test_height() {
-                    compare( parent.height, 100 );
-                }
-                function test_contextColor() {
-                    compare( contextRectangleColor, "blue" );
-                    compare( parent.color, "#0000ff" );
-                }
-
-            }
-
         }
     }
 
     CustomTestCase {
-        name: "SetupExampleScreen"
+        name: "SetupExample"
         when: windowShown
+
+
+        function test_width() {
+            compare( rectangle001.width, 100 );
+        }
+
+        function test_height() {
+            compare( rectangle001.height, 100 );
+        }
+        function test_contextColor() {
+            compare( contextRectangleColor, "blue" );
+            compare( rectangle001.color, "#0000ff" );
+        }
+
 
         function test_screen() {
             var status = compareScreenshots();

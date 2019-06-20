@@ -14,10 +14,16 @@ CONFIG += c++11 testcase qmltestcase
 include( $$SOURCE_ROOT_DIR/common.pri )
 
 
+QML_DIR = $$absolute_path( ../../testutils-quicktests )
+
 DEFINES += EXEC_PER_TESTCASE
+DEFINES += QUICK_TESTS_QML_ROOT_DIR=\\\"$${QML_DIR}\\\"
 
 
 SOURCES += "../../testutils-quicktests/src/tst_SetupExample.cpp"
+
+
+include( $$SOURCE_ROOT_DIR/testutils-quicktests/testutils-quicktests-data.pri )
 
 
 # include library
