@@ -32,6 +32,10 @@ CONFIG += c++11 qmltestcase
 include( ../common.pri )
 
 
+QML_SUBDIR = "/qml"
+DEFINES += QUICK_TESTS_QML_SUBDIR=\\\"$${QML_SUBDIR}\\\"
+
+
 HEADERS += $$files(src/*.h, true)
 
 SOURCES += $$files(src/*.cpp, true)

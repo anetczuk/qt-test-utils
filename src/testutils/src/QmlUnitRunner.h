@@ -41,7 +41,13 @@ namespace quicktestutils {
     class QmlUnitRunner {
     public:
 
-        QmlUnitRunner() {
+        std::string testsName;
+
+
+        QmlUnitRunner(): testsName("qmltests") {
+        }
+
+        QmlUnitRunner(const std::string& name): testsName(name) {
         }
 
         virtual ~QmlUnitRunner() {

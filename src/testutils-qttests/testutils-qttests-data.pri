@@ -21,25 +21,15 @@
 ## SOFTWARE.
 ##
 
-TEMPLATE = subdirs
 
-SUBDIRS =
-
-
-include( ../common.pri )
-
-include( $$SOURCE_ROOT_DIR/autosubdirs/subdirs.pri )
-include( $$SOURCE_ROOT_DIR/autosubdirs/prjgenerator.pri )
+## copy data dir
+copydata.commands = $(COPY_DIR) $$PWD/data $$BUILD_PROJECT_SUBDIR
+QMAKE_EXTRA_TARGETS += copydata
+POST_TARGETDEPS += copydata
 
 
-OTHER_FILES += $$files(*.template, false)
-
-
-override_pro = "false"
-
-equals( override_pro, "true") {
-    generateSubdirPrj( $$SOURCE_CURRENT_DIR/qttests/qttests.pro, $$override_pro );
-}
-generateSubdirsTree( $$SOURCE_ROOT_DIR/testutils-qttests/src, $$SOURCE_CURRENT_DIR/qttests, true, $$override_pro );
-
-addSubprojects( qttests )
+## create tests results dir
+#resultsdir.target = $$OUT_PWD/tests
+resultsdir.commands = $(MKDIR) $$BUILD_PROJECT_SUBDIR/tests/diff
+QMAKE_EXTRA_TARGETS += resultsdir
+POST_TARGETDEPS += resultsdir

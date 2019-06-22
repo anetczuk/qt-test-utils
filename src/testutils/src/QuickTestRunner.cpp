@@ -57,7 +57,7 @@ namespace quicktestutils {
 //        ff.write("\n");
 //        ff.close();
 
-        //qDebug() << "source dir:" << sourceDir;
+//        qDebug() << "source dir:" << sourceDir;
 
         QuickTestsRunner runner;
         return runner.run_tests(arguments, sourceDir);
@@ -124,7 +124,7 @@ namespace quicktestutils {
 
     int QuickTestsRunner::execute_qml_tests(const CmdParser& arguments, const char *sourceDir) {
 //        qDebug() << "execute_qml_tests";
-        QmlUnitRunner runner;
+        QmlUnitRunner runner("quicktests");
         return runner.run(arguments, sourceDir);
     }
 

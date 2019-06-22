@@ -21,13 +21,7 @@
 /// SOFTWARE.
 ///
 
-#ifdef EXEC_PER_TESTCASE
-    #include <QtTest>
-#else
-    #include <QtQuickTest/QtQuickTest>
-#endif
-
-#include "QuickTest.h"
+#include <QtQuickTest/QtQuickTest>
 #include "UnitTest.h"
 
 #include <iostream>
@@ -66,30 +60,21 @@ namespace {
 
     };
 
+
+    class SetupExampleRunner: public QmlSingleTestUnit {
+    public:
+
+        Setup setup;
+
+        SetupExampleRunner(): QmlSingleTestUnit(QUICK_TEST_SOURCE_DIR, "/src/tst_SetupExample.qml"), setup() {
+            //qDebug() << "path:" << unit.c_str();
+            attachSetupObject(setup);
+        }
+
+    };
+
 }
 
 
-class TestSetupExample: public QObject, public QmlSingleTestUnit {
-    Q_OBJECT
-
-public:
-
-    Setup setup;
-
-
-    TestSetupExample(): QObject(), QmlSingleTestUnit(QUICK_TESTS_QML_ROOT_DIR, "/src/tst_SetupExample.qml"), setup() {
-        attachSetupObject(setup);
-    }
-
-
-private slots:
-
-    void initTestCase() {
-        // for QtCreator to detect as test class
-    }
-
-};
-
-
-QTEST_MAIN(TestSetupExample)
+QUICK_TEST_REGISTER(SetupExampleRunner)
 #include "tst_SetupExample.moc"

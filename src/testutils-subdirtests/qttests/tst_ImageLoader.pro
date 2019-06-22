@@ -20,6 +20,10 @@ DEFINES += EXEC_PER_TESTCASE
 SOURCES += "../../testutils-qttests/src/tst_ImageLoader.cpp"
 
 
+## prepare data
+include( $$SOURCE_ROOT_DIR/testutils-qttests/testutils-qttests-data.pri )
+
+
 # include library
 include( $$SOURCE_ROOT_DIR/testutils/testutilsLink.pri )
 

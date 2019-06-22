@@ -20,6 +20,9 @@ DEFINES += EXEC_PER_TESTCASE
 SOURCES += "../../testutils-qttests/src/tst_QmlImage.cpp"
 
 
+include( $$SOURCE_ROOT_DIR/testutils-quicktests/testutils-quicktests-data.pri )
+
+
 # include library
 include( $$SOURCE_ROOT_DIR/testutils/testutilsLink.pri )
 

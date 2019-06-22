@@ -71,30 +71,31 @@ private slots:
         const QStringList args = qApp->arguments();
 
         const QStringList functions = get_functions( args );
-
         const QString currMethod( Q_FUNC_INFO );
-        QString methodName = currMethod.split(" ")[1];        // current test case method (remove "void " prefix)
-        methodName = methodName.split("()")[0];               // return function name without parenthesis
+
+        QString methodName = currMethod.split(" ").back();    // current test case method (remove "void " prefix)
+        methodName = methodName.split("::").back();           // exclude class name
+        methodName = methodName.split("()").front();          // return function name without parenthesis
 
         const int methodIndex = functions.indexOf( methodName );
         QVERIFY2( methodIndex >= 0, "current test case method should be in return list of test functions" );
     }
 
-    void test_get_functions_input() {
-        QVERIFY( qApp != nullptr );
-        QStringList args = qApp->arguments();
-        args.append("-input");
-        args.append("test_unit");
+//    void test_get_functions_input() {
+//        QVERIFY( qApp != nullptr );
+//        QStringList args = qApp->arguments();
+//        args.append("-input");
+//        args.append("test_unit");
 
-        const QStringList functions = get_functions( args );
+//        const QStringList functions = get_functions( args );
 
-        const QString currMethod( Q_FUNC_INFO );
-        QString methodName = currMethod.split(" ")[1];        // current test case method (remove "void " prefix)
-        methodName = methodName.split("()")[0];               // return function name without parenthesis
+//        const QString currMethod( Q_FUNC_INFO );
+//        QString methodName = currMethod.split(" ")[1];        // current test case method (remove "void " prefix)
+//        methodName = methodName.split("()")[0];               // return function name without parenthesis
 
-        const int methodIndex = functions.indexOf( methodName );
-        QVERIFY2( methodIndex >= 0, "current test case method should be in return list of test functions" );
-    }
+//        const int methodIndex = functions.indexOf( methodName );
+//        QVERIFY2( methodIndex >= 0, "current test case method should be in return list of test functions" );
+//    }
 
     void test_find_methods_class_wildcard() {
         QStringList testCases;

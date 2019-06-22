@@ -35,7 +35,7 @@ namespace quicktestutils {
         params.push_back( "-input" );
         params.push_back( unit.c_str() );
 
-        QmlUnitRunner runner;
+        QmlUnitRunner runner( unit );
         return runner.run(params, nullptr, setupObj);
     }
 

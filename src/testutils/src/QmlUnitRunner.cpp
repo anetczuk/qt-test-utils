@@ -33,6 +33,10 @@
 using namespace testutils;
 
 
+// QtCreator 4.9.0 crashes when tests name is passed by variable. Indirect call prevents the crash.
+#define TESTS_MAIN quick_test_main##_with_setup
+
+
 namespace quicktestutils {
 
     QStringList get_functions(const CmdParser& args) {
@@ -49,8 +53,6 @@ namespace quicktestutils {
         //   qml: RectangleSize::test_width()
 
         QString output( qmlProcess.readAll() );
-
-//        qDebug() << "output:" << output.toStdString().c_str();
 
         output.replace("\r", "");
         output.replace("qml: ", "");
@@ -157,7 +159,8 @@ namespace quicktestutils {
         Args argsObj(params);
         const int argc = argsObj.argc();
         char** argv = argsObj.argv();
-        return quick_test_main_with_setup(argc, argv, "qmltests", sourceDir, setup);
+        const char* name = testsName.c_str();
+        return TESTS_MAIN(argc, argv, name, sourceDir, setup);
     }
 
     QStringList QmlUnitRunner::getFunctionsList(const testutils::CmdParser& arguments) const {
