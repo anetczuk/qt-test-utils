@@ -24,6 +24,8 @@
 #include "QuickTestRegister.h"
 #include "QmlUnitRunner.h"
 
+#include <QFileInfo>
+
 
 using namespace testutils;
 
@@ -35,7 +37,10 @@ namespace quicktestutils {
         params.push_back( "-input" );
         params.push_back( unit.c_str() );
 
-        QmlUnitRunner runner( unit );
+        QFileInfo unitFile( unit.c_str() );
+        const QString fileName = unitFile.fileName();
+
+        QmlUnitRunner runner( fileName.toStdString() );
         return runner.run(params, nullptr, setupObj);
     }
 

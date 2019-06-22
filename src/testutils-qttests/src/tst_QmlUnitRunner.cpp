@@ -77,7 +77,11 @@ private slots:
         methodName = methodName.split("::").back();           // exclude class name
         methodName = methodName.split("()").front();          // return function name without parenthesis
 
-        const int methodIndex = functions.indexOf( methodName );
+        const QString className = metaObject()->className();
+        methodName = "(" + className + "::)*" + methodName;                  // optionally consider class name
+        const QRegularExpression re( methodName );
+
+        const int methodIndex = functions.indexOf( re );
         QVERIFY2( methodIndex >= 0, "current test case method should be in return list of test functions" );
     }
 
