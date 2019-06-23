@@ -29,3 +29,7 @@ lcov --output-file $COVERAGE_FILE --remove $COVERAGE_FILE '*/testutils-quicktest
 
 ## generate html view
 genhtml $COVERAGE_FILE --output-directory $COVERAGE_HTML --prefix $REAL_PWD/src
+
+echo ""
+echo "Code coverage result can be found in $COVERAGE_HTML"
+
