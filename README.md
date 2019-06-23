@@ -7,6 +7,7 @@ Extensions to Qt testing framework and tools for QMake.
 - loading/saving images from/to file directly from Qml
 - comparing images and visualising difference between them from Qml
 - possibility to switch to standard Qt tests organization (executable per test file) and autogeneration of project files
+- demonstration of GCC's code coverage functionality (*codecoverage.pri* and *lcov.sh*)
 
 
 ### Example of generated diff image
