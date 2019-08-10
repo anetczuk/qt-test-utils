@@ -1,5 +1,5 @@
 ## qt-test-utils
-Extensions to Qt testing framework and tools for QMake.
+Extensions to Qt Test and Qt Quick Test testing frameworks, and tools for qmake.
 
 ### Features:
 - running all QtTest tests cases in one executable (usefull e.g. in case of one tests subproject in QtCreator)
